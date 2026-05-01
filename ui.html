@@ -13,28 +13,20 @@
     ::-webkit-scrollbar-thumb:hover { background: #52525b; }
 
     body, html {
-      font-family: 'Inter', sans-serif;
-      background: #09090b; 
-      color: #fafafa;
-      height: 100%;
-      overflow: hidden; 
+      font-family: 'Inter', sans-serif; background: #09090b; color: #fafafa;
+      height: 100%; overflow: hidden; 
     }
 
-    .plugin-window {
-      display: flex; flex-direction: column; width: 100%; height: 100%; background: #09090b; position: relative; 
-    }
-
-    /* LAYOUT CONTAINERS */
+    .plugin-window { display: flex; flex-direction: column; width: 100%; height: 100%; background: #09090b; position: relative; }
     .main-layout { display: flex; flex: 1; height: 100%; min-height: 0; }
+    
     .left-panel {
       width: 360px; flex-shrink: 0; border-right: 1px solid #27272a;
       background: #131316; display: flex; flex-direction: column; height: 100%; min-height: 0;
     }
-    .right-panel {
-      flex: 1; display: flex; background: #09090b; overflow: hidden; flex-direction: column; min-height: 0;
-    }
+    .right-panel { flex: 1; display: flex; background: #09090b; overflow: hidden; flex-direction: column; min-height: 0; }
 
-    /* LEFT PANEL APP CONTENT */
+    /* APP CONTENT */
     .app { padding: 16px 12px 12px 12px; flex: 1; display: flex; flex-direction: column; min-height: 0; }
     .header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; flex-shrink: 0; }
     .logo {
@@ -45,7 +37,6 @@
     .header-text .brand { font-size: 18px; font-weight: 600; line-height: 1.2; color: #fafafa; }
     .header-text .subtitle { font-size: 12px; color: #a1a1aa; margin-top: 4px; }
 
-    /* SECTION LABELS & BUTTONS */
     .section-label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-shrink: 0; }
     .section-label { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: #fafafa; }
     .choose-file-btn { 
@@ -79,7 +70,7 @@
       border-top: 1px solid #27272a; font-size: 11px; color: #a1a1aa; flex-shrink: 0; background: #131316;
     }
     
-    /* CONVERT BUTTONS */
+    /* BUTTONS */
     .convert-btn { 
       width: 100%; height: 36px; border-radius: 6px; border: none; font-weight: 500; font-size: 13px; 
       cursor: pointer; background: #fafafa; color: #09090b; transition: background 0.15s ease; 
@@ -89,16 +80,28 @@
     .sidebar-footer .convert-btn { background: #27272a; color: #fafafa; border: 1px solid #3f3f46; }
     .sidebar-footer .convert-btn:hover { background: #3f3f46; }
 
-    /* FOOTER */
     .footer { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; padding-top: 16px; border-top: 1px solid #27272a; flex-shrink: 0; }
     .footer-left, .footer-right { font-size: 11px; color: #71717a; }
 
-    /* RIGHT PANEL - COLLECTIONS SIDEBAR */
+    /* SIDEBAR & DROPDOWN */
     .collections-sidebar { width: 240px; border-right: 1px solid #27272a; display: flex; flex-direction: column; background: #131316; }
     .sidebar-header-row {
       display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #27272a;
-      font-size: 14px; font-weight: 600; color: #fafafa; letter-spacing: 0.05em; height: 48px; 
+      font-size: 14px; font-weight: 600; color: #fafafa; letter-spacing: 0.05em; height: 48px; position: relative;
     }
+    
+    .export-dropdown {
+      position: absolute; right: 16px; top: 40px; background: #18181b; border: 1px solid #3f3f46;
+      border-radius: 6px; box-shadow: 0 4px 20px rgba(0,0,0,0.8); display: none; flex-direction: column;
+      width: 160px; z-index: 100; overflow: hidden;
+    }
+    .export-dropdown.open { display: flex; }
+    .dropdown-item {
+      padding: 10px 12px; font-size: 12px; color: #e4e4e7; cursor: pointer; transition: 0.15s; font-weight: 500;
+    }
+    .dropdown-item:hover { background: #27272a; color: #fafafa; }
+    .dropdown-item:not(:last-child) { border-bottom: 1px solid #27272a; }
+
     .collections-list { padding: 12px 8px; display: flex; flex-direction: column; gap: 2px; flex: 1; overflow-y: auto; }
     .collection-item {
       display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-radius: 6px;
@@ -109,7 +112,7 @@
       font-size: 11px; color: #71717a; background: #09090b; padding: 2px 8px; border-radius: 12px; border: 1px solid #27272a;
     }
     .collection-item.active .count { color: #fafafa; border-color: #52525b; }
-    .sidebar-footer { padding: 16px; border-top: 1px solid #27272a; }
+    .sidebar-footer { padding: 16px; border-top: 1px solid #27272a; display: flex; flex-direction: column; gap: 8px; }
 
     /* RIGHT PANEL - TABLE VIEW */
     .table-view { flex: 1; display: flex; flex-direction: column; position: relative; background: #09090b; }
@@ -263,7 +266,7 @@
   <div class="dialog-overlay" id="editConfirmDialog">
     <div class="dialog-box">
       <div class="dialog-title">Confirm Update</div>
-      <div class="dialog-text">Are you sure you want to update this variable? The JSON payload will be updated to reflect this change.</div>
+      <div class="dialog-text">Are you sure you want to update this variable? The JSON payload will be updated.</div>
       <div class="dialog-actions-row">
         <button class="dialog-btn btn-cancel" id="btnCancelInlineEdit" style="width: auto; padding: 0 16px;">Cancel</button>
         <button class="dialog-btn btn-update" id="btnConfirmInlineEdit" style="width: auto; padding: 0 16px; background: #10b981; color: white; border-color: #10b981;">Update</button>
@@ -275,7 +278,7 @@
   <div class="dialog-overlay" id="deleteConfirmDialog">
     <div class="dialog-box">
       <div class="dialog-title">Confirm Deletion</div>
-      <div class="dialog-text">Are you sure you want to delete this variable? This action removes it from the JSON payload.</div>
+      <div class="dialog-text">Are you sure you want to delete this variable? This removes it from the JSON payload.</div>
       <div class="dialog-actions-row">
         <button class="dialog-btn btn-cancel" id="btnCancelInlineDelete" style="width: auto; padding: 0 16px;">Cancel</button>
         <button class="dialog-btn btn-override" id="btnConfirmInlineDelete" style="width: auto; padding: 0 16px;">Delete</button>
@@ -287,12 +290,31 @@
   <div class="dialog-overlay" id="reviewDialog">
     <div class="dialog-box" style="width: 550px; max-height: 85vh; padding: 20px;">
       <div class="dialog-title">Review Sync Changes</div>
-      <div class="dialog-text">Select the updates you want to push to Figma. Unchanged variables have been filtered out.</div>
+      <div class="dialog-text">Select the updates you want to push to Figma. Unchanged variables are filtered out.</div>
       <div class="diff-list" id="diffList" style="overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 4px; margin: 8px 0; border: 1px solid #27272a; border-radius: 8px; padding: 4px; background: #09090b; max-height: 350px;"></div>
       <div class="dialog-actions-row">
         <button class="dialog-btn btn-cancel" id="btnCancelReview" style="width: auto; padding: 0 16px;">Cancel</button>
         <button class="dialog-btn btn-update" id="btnConfirmReview" style="width: auto; padding: 0 16px; background: #fafafa; color: #09090b;">Confirm Selected Sync</button>
       </div>
+    </div>
+  </div>
+
+  <!-- EXPORT CODE DIALOG -->
+  <div class="dialog-overlay" id="exportDialog">
+    <div class="dialog-box" style="width: 650px; max-height: 85vh;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="dialog-title" id="exportTitle">Export Code</div>
+        <div style="display: flex; gap: 8px;">
+          <button class="add-var-btn" id="btnCopyExport">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copy
+          </button>
+          <button class="add-var-btn" id="btnDownloadExport" style="background: #f97316; color: white; border-color: #f97316;">
+             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> Download
+          </button>
+          <button class="add-var-btn" id="btnCloseExport" style="border: none;">✕</button>
+        </div>
+      </div>
+      <textarea id="exportTextArea" readonly style="width: 100%; height: 350px; background: #000; color: #a1a1aa; font-family: 'JetBrains Mono', monospace; font-size: 12px; padding: 12px; border: 1px solid #27272a; border-radius: 6px; resize: none;"></textarea>
     </div>
   </div>
 
@@ -340,7 +362,24 @@
       <div style="display: flex; height: 100%; min-height: 0;">
         
         <div class="collections-sidebar">
-          <div class="sidebar-header-row"><span>Variable Lists</span></div>
+          <div class="sidebar-header-row">
+            <span>Variable Lists</span>
+            
+            <!-- Export Dropdown -->
+            <div>
+              <button class="add-var-btn" id="btnExportMenu" title="Export Formats">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              </button>
+              <div id="exportDropdown" class="export-dropdown">
+                <div class="dropdown-item" data-format="css">CSS Variables</div>
+                <div class="dropdown-item" data-format="react">React / JS Object</div>
+                <div class="dropdown-item" data-format="flutter">Flutter (Dart)</div>
+                <div class="dropdown-item" data-format="swift">Swift (iOS)</div>
+                <div class="dropdown-item" data-format="json">Raw JSON</div>
+              </div>
+            </div>
+
+          </div>
           <div class="collections-list" id="collectionFilters">
             <div class="collection-item active" data-type="All"><span>All Types</span><span class="count" id="count-All">0</span></div>
             <div class="collection-item" data-type="Color"><span>Color</span><span class="count" id="count-Color">0</span></div>
@@ -348,8 +387,14 @@
             <div class="collection-item" data-type="String"><span>String</span><span class="count" id="count-String">0</span></div>
             <div class="collection-item" data-type="Boolean"><span>Boolean</span><span class="count" id="count-Boolean">0</span></div>
           </div>
+          
           <div class="sidebar-footer">
             <button class="convert-btn" id="importRightBtn">Sync to Figma</button>
+            <!-- Import from Figma Button -->
+            <button class="convert-btn" id="btnImportFromFigma" style="background: transparent; border: 1px solid #3f3f46; color: #a1a1aa; margin-top: 8px;">
+               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg> 
+               Import from Figma
+            </button>
           </div>
         </div>
 
@@ -359,8 +404,7 @@
             <div class="th" style="flex: 1.5;">
               Variable Value
               <button class="add-var-btn" id="btnOpenAddVar">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                Add
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Add
               </button>
             </div>
           </div>
@@ -391,6 +435,7 @@
   const fileInput = document.getElementById("fileInput");
   const importLeftBtn = document.getElementById("importLeftBtn");
   const importRightBtn = document.getElementById("importRightBtn");
+  const btnImportFromFigma = document.getElementById("btnImportFromFigma");
   const charCount = document.getElementById("charCount");
   const lineNumbers = document.getElementById("lineNumbers");
   const editorWrap = document.getElementById("editorWrap");
@@ -401,7 +446,14 @@
   const reviewDialog = document.getElementById("reviewDialog");
   const diffList = document.getElementById("diffList");
   
-  // Inline Edit State
+  // Export Elements
+  const btnExportMenu = document.getElementById("btnExportMenu");
+  const exportDropdown = document.getElementById("exportDropdown");
+  const exportDialog = document.getElementById("exportDialog");
+  const exportTextArea = document.getElementById("exportTextArea");
+  const exportTitle = document.getElementById("exportTitle");
+  let currentExportFormat = '';
+  
   let pendingOldPath = null;
   let pendingNewPath = null;
   let pendingNewValue = null;
@@ -553,8 +605,6 @@
          const valTd = row.querySelector('.val-cell');
          
          const rawVal = btn.dataset.val;
-
-         // Extract the root key to prevent accidental structure breaks
          const parts = path.split('/');
          const rootPart = parts.length > 1 ? parts[0] : '';
          const editablePart = parts.length > 1 ? parts.slice(1).join('/') : path;
@@ -605,19 +655,31 @@
      }
   });
 
-  // Safe Deep JSON Mutation Engine
+  // Re-build Nested Object from flat array (Used for Import)
+  function buildNestedJSON(flatArray) {
+     const newObj = {};
+     flatArray.forEach(v => {
+       const keys = v.name.split('/');
+       let current = newObj;
+       for (let i = 0; i < keys.length - 1; i++) {
+           if (!current[keys[i]]) current[keys[i]] = {}; 
+           current = current[keys[i]];
+       }
+       current[keys[keys.length - 1]] = v.value;
+     });
+     return newObj;
+  }
+
   function applyJSONUpdate(oldPath, newPath, newValue, isDelete = false, isAdd = false) {
      try {
          const jsonObj = JSON.parse(input.value || "{}");
-         
          const inferType = (val) => {
             if(!isNaN(val) && val.trim() !== '') return Number(val);
             if(val === 'true') return true;
             if(val === 'false') return false;
-            return String(val).replace(/['"]/g, ''); // strip quotes if user adds them
+            return String(val).replace(/['"]/g, ''); 
          };
 
-         // Deletion Logic
          if (isDelete && oldPath) {
              const keys = oldPath.split('/');
              let current = jsonObj;
@@ -626,17 +688,14 @@
              }
              delete current[keys[keys.length - 1]];
          } 
-         
-         // Edit Logic (Includes Name/Path Change)
          else if (!isDelete && !isAdd && oldPath) {
              const oldKeys = oldPath.split('/');
              let oldCurrent = jsonObj;
              for (let i = 0; i < oldKeys.length - 1; i++) {
                  if (oldCurrent[oldKeys[i]]) oldCurrent = oldCurrent[oldKeys[i]];
              }
-             delete oldCurrent[oldKeys[oldKeys.length - 1]]; // Remove old node
+             delete oldCurrent[oldKeys[oldKeys.length - 1]]; 
              
-             // Now build new path
              const newKeys = newPath.split('/');
              let newCurrent = jsonObj;
              for (let i = 0; i < newKeys.length - 1; i++) {
@@ -645,8 +704,6 @@
              }
              newCurrent[newKeys[newKeys.length - 1]] = inferType(newValue);
          }
-
-         // Add New Logic
          else if (isAdd && newPath) {
              const newKeys = newPath.split('/');
              let newCurrent = jsonObj;
@@ -657,39 +714,31 @@
              newCurrent[newKeys[newKeys.length - 1]] = inferType(newValue);
          }
 
-         // Sync everything back
          input.value = JSON.stringify(jsonObj, null, 2);
          updateLineNumbers();
          charCount.textContent = new Blob([input.value]).size + " bytes";
-         
-         // Trigger full UI refresh
          updatePreview(); 
          parent.postMessage({ pluginMessage: { type: "NOTIFY", message: `✅ JSON Successfully Updated.` } }, "*");
 
      } catch (e) {
-         console.error("Failed to update JSON", e);
-         parent.postMessage({ pluginMessage: { type: "NOTIFY", message: "❌ Invalid JSON. Please fix formatting errors before editing." } }, "*");
+         parent.postMessage({ pluginMessage: { type: "NOTIFY", message: "❌ Invalid JSON. Please fix formatting errors." } }, "*");
      }
   }
 
-  // Dialog Execution Bindings
+  // Bindings
   document.getElementById('btnConfirmInlineEdit').onclick = () => {
       applyJSONUpdate(pendingOldPath, pendingNewPath, pendingNewValue, false, false);
       document.getElementById('editConfirmDialog').style.display = 'none';
   };
   document.getElementById('btnCancelInlineEdit').onclick = () => {
-      document.getElementById('editConfirmDialog').style.display = 'none';
-      renderTable(); 
+      document.getElementById('editConfirmDialog').style.display = 'none'; renderTable(); 
   };
   document.getElementById('btnConfirmInlineDelete').onclick = () => {
       applyJSONUpdate(pendingDeletePath, null, null, true, false);
       document.getElementById('deleteConfirmDialog').style.display = 'none';
   };
-  document.getElementById('btnCancelInlineDelete').onclick = () => {
-      document.getElementById('deleteConfirmDialog').style.display = 'none';
-  };
+  document.getElementById('btnCancelInlineDelete').onclick = () => { document.getElementById('deleteConfirmDialog').style.display = 'none'; };
 
-  // Add Variable Listeners
   document.getElementById('btnOpenAddVar').onclick = () => {
       document.getElementById('newVarName').value = '';
       document.getElementById('newVarValue').value = '';
@@ -705,8 +754,121 @@
       }
   };
 
+  // --- EXPORT FUNCTIONALITY ---
+  
+  btnExportMenu.onclick = (e) => {
+    e.stopPropagation();
+    exportDropdown.classList.toggle('open');
+  };
 
-  // --- STANDARD LOGIC --- //
+  window.onclick = () => { exportDropdown.classList.remove('open'); };
+
+  function toCamelCase(str) {
+    return str.replace(/[-_\/]+(.)?/g, (_, c) => c ? c.toUpperCase() : '');
+  }
+
+  function generateExportCode(format) {
+    if (parsedVariables.length === 0) return "No variables to export.";
+    let code = "";
+    
+    switch(format) {
+      case "css":
+        exportTitle.textContent = "Export CSS Variables";
+        code = ":root {\n";
+        parsedVariables.forEach(v => {
+          const cssName = v.name.replace(/\//g, '-');
+          code += `  --${cssName}: ${v.value};\n`;
+        });
+        code += "}";
+        break;
+      case "react":
+        exportTitle.textContent = "Export React / JS Object";
+        code = "export const tokens = " + JSON.stringify(buildNestedJSON(parsedVariables), null, 2) + ";";
+        break;
+      case "flutter":
+        exportTitle.textContent = "Export Flutter (Dart)";
+        code = "import 'package:flutter/material.dart';\n\nclass AppTokens {\n";
+        parsedVariables.forEach(v => {
+          const varName = toCamelCase(v.name);
+          if (v.type === "Color") {
+             const hex = String(v.value).replace('#', '');
+             const argb = hex.length === 8 ? hex : `FF${hex}`;
+             code += `  static const Color ${varName} = Color(0x${argb});\n`;
+          } else if (v.type === "Number") {
+             code += `  static const double ${varName} = ${v.value};\n`;
+          } else if (v.type === "Boolean") {
+             code += `  static const bool ${varName} = ${v.value};\n`;
+          } else {
+             code += `  static const String ${varName} = "${v.value}";\n`;
+          }
+        });
+        code += "}";
+        break;
+      case "swift":
+        exportTitle.textContent = "Export Swift (iOS)";
+        code = "import SwiftUI\n\nstruct AppTokens {\n";
+        parsedVariables.forEach(v => {
+          const varName = toCamelCase(v.name);
+          if (v.type === "Color") {
+             const hex = String(v.value);
+             code += `  static let ${varName} = Color(hex: "${hex}")\n`;
+          } else if (v.type === "Number") {
+             code += `  static let ${varName}: CGFloat = ${v.value}\n`;
+          } else if (v.type === "Boolean") {
+             code += `  static let ${varName}: Bool = ${v.value}\n`;
+          } else {
+             code += `  static let ${varName}: String = "${v.value}"\n`;
+          }
+        });
+        code += "}";
+        break;
+      case "json":
+        exportTitle.textContent = "Export Raw JSON";
+        code = JSON.stringify(buildNestedJSON(parsedVariables), null, 2);
+        break;
+    }
+    return code;
+  }
+
+  document.querySelectorAll('.dropdown-item').forEach(item => {
+    item.onclick = () => {
+      currentExportFormat = item.dataset.format;
+      if (parsedVariables.length === 0) updatePreview();
+      exportTextArea.value = generateExportCode(currentExportFormat);
+      exportDialog.style.display = 'flex';
+    };
+  });
+
+  document.getElementById('btnCloseExport').onclick = () => exportDialog.style.display = 'none';
+  
+  document.getElementById('btnCopyExport').onclick = () => {
+    exportTextArea.select();
+    document.execCommand('copy');
+    parent.postMessage({ pluginMessage: { type: "NOTIFY", message: "✅ Code copied to clipboard!" } }, "*");
+  };
+
+  document.getElementById('btnDownloadExport').onclick = () => {
+    const text = exportTextArea.value;
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    
+    let ext = '.txt';
+    if(currentExportFormat === 'css') ext = '.css';
+    if(currentExportFormat === 'react') ext = '.js';
+    if(currentExportFormat === 'flutter') ext = '.dart';
+    if(currentExportFormat === 'swift') ext = '.swift';
+    if(currentExportFormat === 'json') ext = '.json';
+    
+    a.download = `tokens${ext}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  // --- STANDARD LOGIC & API SYNC --- //
 
   function renderDiffList() {
     diffList.innerHTML = currentDiffData.map((item, index) => {
@@ -730,15 +892,6 @@
       `;
     }).join('');
   }
-
-  document.querySelectorAll('.collection-item').forEach(item => {
-    item.addEventListener('click', (e) => {
-      document.querySelectorAll('.collection-item').forEach(el => el.classList.remove('active'));
-      e.currentTarget.classList.add('active');
-      currentFilter = e.currentTarget.dataset.type;
-      renderTable();
-    });
-  });
 
   input.addEventListener('scroll', () => { lineNumbers.scrollTop = input.scrollTop; });
   function updateLineNumbers() {
@@ -791,10 +944,22 @@
     if (parsedVariables.length > 0) parent.postMessage({ pluginMessage: { type: "CHECK_EXISTING", data: parsedVariables } }, "*");
   };
 
+  btnImportFromFigma.onclick = () => {
+    parent.postMessage({ pluginMessage: { type: "FETCH_VARIABLES" } }, "*");
+  };
+
   window.onmessage = (event) => {
     const msg = event.data?.pluginMessage; if (!msg) return;
     if (msg.type === "PROMPT_OVERRIDE") { currentDiffData = msg.data; overrideDialog.style.display = "flex"; } 
     else if (msg.type === "SYNC_READY") { parent.postMessage({ pluginMessage: { type: "SYNC_VARIABLES", data: msg.data } }, "*"); }
+    else if (msg.type === "LOAD_VARIABLES") {
+      const newJSON = buildNestedJSON(msg.data);
+      input.value = JSON.stringify(newJSON, null, 2);
+      updateLineNumbers();
+      charCount.textContent = new Blob([input.value]).size + " bytes";
+      updatePreview();
+      parent.postMessage({ pluginMessage: { type: "NOTIFY", message: `✅ Successfully imported ${msg.data.length} variables from Figma.` } }, "*");
+    }
   };
 
   document.getElementById("btnUpdateOnly").onclick = () => {

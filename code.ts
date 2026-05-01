@@ -13,7 +13,7 @@ interface ParsedVariable {
   status?: "NEW" | "OVERRIDE";
 }
 
-// Convert Figma's internal RGB object back to HEX for the UI Diff
+// Convert Figma's internal RGB object back to HEX 
 function figmaColorToHex(value: any): string {
   if (!value || typeof value.r !== 'number') return String(value);
   const toHex = (n: number) => {
@@ -22,7 +22,7 @@ function figmaColorToHex(value: any): string {
   };
   let hex = `#${toHex(value.r)}${toHex(value.g)}${toHex(value.b)}`;
   if (value.a !== undefined && value.a < 1) {
-    hex += toHex(value.a); // Support alpha transparency representation
+    hex += toHex(value.a); 
   }
   return hex.toUpperCase();
 }
@@ -77,6 +77,49 @@ figma.ui.onmessage = async (msg) => {
     return;
   }
 
+  // Handle Export / Load from Figma
+  if (msg.type === "FETCH_VARIABLES") {
+    try {
+      const allVariables = await figma.variables.getLocalVariablesAsync();
+      const exported: ParsedVariable[] = [];
+
+      for (const v of allVariables) {
+        // Safe check for valid variables and modes
+        if(!v.valuesByMode) continue;
+        const modes = Object.keys(v.valuesByMode);
+        if(modes.length === 0) continue;
+        
+        const rawVal = v.valuesByMode[modes[0]];
+        // Skip Aliases for pure extraction
+        if (typeof rawVal === 'object' && (rawVal as any).type === 'VARIABLE_ALIAS') {
+          continue; 
+        }
+
+        let val = rawVal;
+        let type: "Color" | "Number" | "String" | "Boolean" = "String";
+
+        if (v.resolvedType === "COLOR") { 
+          val = figmaColorToHex(rawVal); 
+          type = "Color"; 
+        }
+        else if (v.resolvedType === "FLOAT") { type = "Number"; }
+        else if (v.resolvedType === "BOOLEAN") { type = "Boolean"; }
+
+        // Clean up Figma's internal naming structure (replace underscores back to slashes if needed, or just keep as is)
+        let cleanName = v.name; 
+        
+        exported.push({ name: cleanName, value: val, type: type });
+      }
+
+      figma.ui.postMessage({ type: "LOAD_VARIABLES", data: exported });
+    } catch (e: any) {
+      console.error(e);
+      figma.notify("❌ Failed to import variables from Figma.");
+    }
+    return;
+  }
+
+
   // Step 1: UI asks backend to prepare the Diff List
   if (msg.type === "CHECK_EXISTING") {
     const collections = await figma.variables.getLocalVariableCollectionsAsync();
@@ -88,7 +131,6 @@ figma.ui.onmessage = async (msg) => {
       existingVariables = allVariables.filter(v => v.variableCollectionId === collection.id);
     }
 
-    // Filter Diff Array to ONLY include New or Changed items
     const diffData: any[] = [];
     
     msg.data.forEach((incoming: ParsedVariable) => {

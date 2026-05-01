@@ -5,43 +5,24 @@
 
 figma.showUI(__html__, { width: 1200, height: 700 });
 
+interface ParsedVariable {
+  name: string;
+  value: any;
+  type: "Color" | "Number" | "String" | "Boolean";
+}
+
 // Listen from UI
 figma.ui.onmessage = async (msg) => {
-  if (msg.type === "IMPORT_JSON") {
+  if (msg.type === "SYNC_VARIABLES") {
     try {
-      const data = JSON.parse(msg.data);
-      await processJSON(data);
-      figma.notify("✅ Variables created successfully");
-    } catch (e) {
-      figma.notify("❌ Invalid JSON format");
+      const result = await syncVariablesToFigma(msg.data);
+      figma.notify(`✅ Synced! Created: ${result.created}, Updated: ${result.updated}`);
+    } catch (e: any) {
+      console.error(e);
+      figma.notify(`❌ Sync Error: ${e.message}`);
     }
   }
 };
-
-// Flatten JSON to handle deeply nested objects
-function flatten(obj: any, parent = "", res: any = {}) {
-  for (let key in obj) {
-    const propName = parent ? `${parent}/${key}` : key;
-
-    if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {
-      flatten(obj[key], propName, res);
-    } else {
-      res[propName] = obj[key];
-    }
-  }
-  return res;
-}
-
-// Detect primitive type
-function detectType(value: any) {
-  if (typeof value === "number") return "FLOAT";
-  if (typeof value === "boolean") return "BOOLEAN";
-  if (typeof value === "string") {
-    // Supports HEX and rgb/rgba
-    if (/^#([0-9A-F]{3}){1,2}$/i.test(value) || /^rgba?\(/i.test(value)) return "COLOR";
-    return "STRING";
-  }
-}
 
 // Parses string to Figma's exact {r, g, b, a} color format
 function parseColor(colorStr: string) {
@@ -74,35 +55,58 @@ function parseColor(colorStr: string) {
   return { r: 0, g: 0, b: 0, a: 1 };
 }
 
-// Main processor
-async function processJSON(data: any) {
-  const flat = flatten(data);
-
-  // Check if collection exists to avoid duplicates, else create it
-  let collection = figma.variables.getLocalVariableCollections().find(c => c.name === "TokenShift");
+// Main execution process directly bridging UI arrays to Figma Variables
+async function syncVariablesToFigma(variables: ParsedVariable[]) {
+  // Use the new Async methods required by Figma
+  const collections = await figma.variables.getLocalVariableCollectionsAsync();
+  let collection = collections.find(c => c.name === "TokenShift");
+  
   if (!collection) {
     collection = figma.variables.createVariableCollection("TokenShift");
   }
 
-  for (const key in flat) {
-    const value = flat[key];
-    const type = detectType(value);
+  // Pre-load existing variables using Async to prevent duplicates/crashing
+  const allVariables = await figma.variables.getLocalVariablesAsync();
+  const existingVariables = allVariables.filter(v => v.variableCollectionId === collection!.id);
+  
+  let created = 0;
+  let updated = 0;
 
-    if (!type) continue;
-
-    // Notice: Figma automatically turns "path/to/var" into grouped folders!
-    const variable = figma.variables.createVariable(
-      key,
-      collection.id,
-      type as VariableResolvedDataType
-    );
-
-    let finalValue = value;
-
-    if (type === "COLOR") {
-      finalValue = parseColor(value as string);
+  for (const v of variables) {
+    // Map UI types to Figma backend types
+    let figmaType: VariableResolvedDataType;
+    switch(v.type) {
+        case "Color": figmaType = "COLOR"; break;
+        case "Number": figmaType = "FLOAT"; break;
+        case "Boolean": figmaType = "BOOLEAN"; break;
+        case "String": default: figmaType = "STRING"; break;
     }
 
+    // Identify if the variable already exists to update it rather than creating a duplicate
+    let variable = existingVariables.find(ev => ev.name === v.name);
+
+    if (!variable) {
+        // FIX: Passed `collection` directly instead of `collection.id`
+        variable = figma.variables.createVariable(v.name, collection, figmaType);
+        created++;
+    } else {
+        // Prevent fatal errors if user changed a type of an existing variable key
+        if (variable.resolvedType !== figmaType) {
+            console.warn(`Skipped updating ${v.name}: Type mismatch in Figma.`);
+            continue;
+        }
+        updated++;
+    }
+
+    // Resolve Value Formats
+    let finalValue = v.value;
+    if (figmaType === "COLOR") {
+        finalValue = parseColor(String(v.value));
+    }
+
+    // Apply the update to Figma Core
     variable.setValueForMode(collection.modes[0].modeId, finalValue);
   }
+
+  return { created, updated };
 }

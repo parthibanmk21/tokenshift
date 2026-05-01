@@ -831,11 +831,15 @@
     updatePreview();
   };
 
+  // UPDATED: Sends parsed data directly to backend
   importRightBtn.onclick = () => {
     if (parsedVariables.length > 0) {
-      parent.postMessage({ pluginMessage: { type: "IMPORT_JSON", data: input.value } }, "*");
+      parent.postMessage({ pluginMessage: { type: "SYNC_VARIABLES", data: parsedVariables } }, "*");
     } else {
       updatePreview();
+      if (parsedVariables.length > 0) {
+        parent.postMessage({ pluginMessage: { type: "SYNC_VARIABLES", data: parsedVariables } }, "*");
+      }
     }
   };
 </script>

@@ -6,504 +6,570 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
+    /* Minimal Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #3f3f46;
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #52525b;
+    }
+
+    body, html {
       font-family: 'Inter', sans-serif;
-      background: #0d1117;
-      color: #E2E8F0;
-      min-height: 100vh;
+      background: #09090b; 
+      color: #fafafa;
+      height: 100%;
+      overflow: hidden; 
     }
 
     .plugin-window {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+      background: #09090b;
+    }
+
+    /* LAYOUT CONTAINERS */
+    .main-layout {
+      display: flex;
+      flex: 1;
+      height: 100%;
+      min-height: 0; 
+    }
+
+    .left-panel {
       width: 360px;
-      margin: 0 auto;
-      background: #0d1117;
-      min-height: 100vh;
-    }
-
-    /* TITLE BAR */
-    .title-bar {
+      flex-shrink: 0;
+      border-right: 1px solid #27272a;
+      background: #131316; 
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 16px;
-      border-bottom: 1px solid #1e2a3a;
+      flex-direction: column;
+      height: 100%;
+      min-height: 0;
     }
 
-    .title-bar-left {
+    .right-panel {
+      flex: 1;
       display: flex;
-      align-items: center;
-      gap: 8px;
+      background: #09090b;
+      overflow: hidden;
+      flex-direction: column;
+      min-height: 0;
     }
 
-    .title-bar-icon {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      background: linear-gradient(135deg, #7C3AED, #06B6D4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-    }
-
-    .title-bar-name {
-      font-size: 14px;
-      font-weight: 600;
-      color: #E2E8F0;
-    }
-
-    .close-btn {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.06);
-      border: none;
-      color: #94A3B8;
-      cursor: pointer;
-      font-size: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      line-height: 1;
-    }
-
-    .close-btn:hover { background: rgba(255,255,255,0.1); }
-
-    /* MAIN CONTENT */
+    /* LEFT PANEL APP CONTENT (Padding reduced by 8px) */
     .app {
-      padding: 20px 16px;
+      padding: 16px 12px 12px 12px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0; 
     }
 
-    /* HEADER */
     .header {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
       margin-bottom: 24px;
-      position: relative;
-    }
-
-    .logo {
-      width: 64px;
-      height: 64px;
-      border-radius: 18px;
-      background: linear-gradient(135deg, #7C3AED, #5B21B6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      box-shadow: 0 0 40px rgba(124,58,237,0.5);
       flex-shrink: 0;
     }
 
-    .header-text .brand {
-      font-size: 26px;
-      font-weight: 700;
-      line-height: 1;
-    }
-
-    .header-text .brand-white {
-      color: #E2E8F0;
-    }
-
-    .header-text .brand-gradient {
-      background: linear-gradient(90deg, #7C3AED, #06B6D4);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .header-text .subtitle {
-      font-size: 13px;
-      color: #64748B;
-      margin-top: 4px;
-    }
-
-    .sparkles {
-      position: absolute;
-      right: 0;
-      top: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 2px;
-    }
-
-    .sparkle-big {
-      font-size: 22px;
-      color: #7C3AED;
-      filter: drop-shadow(0 0 6px rgba(124,58,237,0.8));
-    }
-
-    .sparkle-small {
-      font-size: 13px;
-      color: #7C3AED;
-      opacity: 0.7;
-      margin-right: 8px;
-    }
-
-    /* SECTION LABEL */
-    .section-label {
+    .logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: #27272a; 
+      border: 1px solid #3f3f46;
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #CBD5E1;
-      margin-bottom: 10px;
+      justify-content: center;
+      font-size: 20px;
+      color: #f97316; /* Match orange bolt from reference */
+      flex-shrink: 0;
     }
 
-    .section-label .icon {
-      font-size: 14px;
-      color: #94A3B8;
-    }
+    .header-text .brand { font-size: 18px; font-weight: 600; line-height: 1.2; color: #fafafa; }
+    .header-text .subtitle { font-size: 12px; color: #a1a1aa; margin-top: 4px; }
 
-    /* CARD */
-    .card {
-      background: linear-gradient(180deg, rgba(22,33,55,0.9), rgba(10,18,38,0.9));
-      border-radius: 14px;
-      padding: 14px;
-      border: 1px solid rgba(255,255,255,0.07);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 4px 20px rgba(0,0,0,0.4);
-      margin-bottom: 6px;
-    }
-
-    .card-header {
+    /* SECTION LABELS & BUTTONS */
+    .section-label-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
+      flex-shrink: 0;
     }
 
-    .tag {
-      font-size: 10px;
-      padding: 3px 10px;
-      border-radius: 20px;
-      background: rgba(124,58,237,0.2);
-      color: #C4B5FD;
-      border: 1px solid rgba(124,58,237,0.3);
-      font-weight: 500;
+    .section-label { 
+      display: flex; 
+      align-items: center; 
+      gap: 8px; 
+      font-size: 13px; 
+      font-weight: 500; 
+      color: #fafafa; 
     }
 
+    .choose-file-btn { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 6px; 
+      padding: 6px 10px; 
+      border-radius: 6px; 
+      background: #18181b; 
+      border: 1px solid #3f3f46; 
+      color: #e4e4e7; 
+      font-size: 11px; 
+      font-weight: 500; 
+      cursor: pointer; 
+      transition: background 0.2s ease, border-color 0.2s ease; 
+      font-family: 'Inter', sans-serif; 
+    }
+    
+    .choose-file-btn:hover { 
+      background: #27272a; 
+      border-color: #52525b;
+    }
+
+    input[type="file"] { display: none; }
+    
     /* JSON EDITOR */
-    .editor-wrap {
-      position: relative;
-      background: #080e1a;
-      border-radius: 10px;
-      border: 1px solid #1a2540;
+    .editor-wrap { 
+      flex: 1; 
+      display: flex;
+      flex-direction: column;
+      background: #09090b; 
+      border-radius: 8px; 
+      border: 1px solid #27272a; 
+      margin-bottom: 16px;
+      min-height: 0; 
+      transition: border-color 0.2s;
+    }
+
+    .editor-wrap:focus-within {
+      border-color: #52525b;
+    }
+
+    .editor-lines { 
+      flex: 1;
+      display: flex; 
+      min-height: 0; 
       overflow: hidden;
     }
 
-    .editor-lines {
-      display: flex;
+    .line-numbers { 
+      display: flex; 
+      flex-direction: column; 
+      padding: 12px 8px; 
+      background: #131316; 
+      border-right: 1px solid #27272a; 
+      min-width: 36px; 
+      text-align: right; 
+      overflow-y: hidden; 
+      user-select: none;
     }
 
-    .line-numbers {
+    .line-numbers span { 
+      font-family: 'JetBrains Mono', monospace; 
+      font-size: 12px; 
+      color: #52525b; 
+      line-height: 1.6; 
+    }
+
+    textarea#jsonInput { 
+      flex: 1;
+      font-family: 'JetBrains Mono', monospace; 
+      font-size: 12px; 
+      color: #e4e4e7; 
+      background: transparent; 
+      border: none; 
+      outline: none; 
+      resize: none; 
+      width: 100%; 
+      padding: 12px; 
+      line-height: 1.6; 
+      caret-color: #fafafa; 
+      overflow-y: auto;
+    }
+    
+    textarea#jsonInput::placeholder { color: #52525b; }
+
+    .editor-footer { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      padding: 10px 12px; 
+      border-top: 1px solid #27272a; 
+      font-size: 11px; 
+      color: #a1a1aa;
+      flex-shrink: 0;
+      background: #131316;
+    }
+    
+    /* CONVERT BUTTONS (Reduced height, hover color only) */
+    .convert-btn { 
+      width: 100%; 
+      height: 36px; /* Reduced padding/height */
+      border-radius: 6px; 
+      border: none; 
+      font-weight: 500; 
+      font-size: 13px; 
+      cursor: pointer; 
+      background: #fafafa; 
+      color: #09090b; 
+      transition: background 0.15s ease; /* Removed transform */
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      gap: 8px; 
+      flex-shrink: 0;
+    }
+    .convert-btn:hover { 
+      background: #e4e4e7; 
+    }
+    
+    .sidebar-footer .convert-btn {
+      background: #27272a; 
+      color: #fafafa; 
+      border: 1px solid #3f3f46;
+    }
+    .sidebar-footer .convert-btn:hover {
+      background: #3f3f46;
+    }
+
+    /* FOOTER */
+    .footer { 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
+      margin-top: 20px; 
+      padding-top: 16px; 
+      border-top: 1px solid #27272a; 
+      flex-shrink: 0;
+    }
+    .footer-left, .footer-right { font-size: 11px; color: #71717a; }
+
+    /* RIGHT PANEL - COLLECTIONS SIDEBAR */
+    .collections-sidebar {
+      width: 240px;
+      border-right: 1px solid #27272a;
       display: flex;
       flex-direction: column;
+      background: #131316;
+    }
+
+    /* Aligned Header styles */
+    .sidebar-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid #27272a;
+      font-size: 14px;
+      font-weight: 600;
+      color: #fafafa;
+      letter-spacing: 0.05em;
+      height: 48px; /* Fixed height to match table header */
+    }
+
+    .collections-list {
       padding: 12px 8px;
-      background: #0a1120;
-      border-right: 1px solid #1a2540;
-      min-width: 32px;
-      text-align: right;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex: 1;
+      overflow-y: auto;
     }
 
-    .line-numbers span {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      color: #2d4060;
-      line-height: 1.6;
-    }
-
-    textarea#jsonInput {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      color: #93C5FD;
-      background: transparent;
-      border: none;
-      outline: none;
-      resize: none;
-      width: 100%;
-      height: 160px;
-      padding: 12px;
-      line-height: 1.6;
-      caret-color: #7C3AED;
-    }
-
-    textarea#jsonInput::placeholder {
-      color: #1e3050;
-    }
-
-    .editor-footer {
+    .collection-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 8px 12px;
-      border-top: 1px solid #1a2540;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #a1a1aa;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .collection-item:hover {
+      background: #27272a;
+      color: #fafafa;
+    }
+
+    .collection-item.active {
+      background: #27272a;
+      color: #fafafa;
+    }
+
+    .collection-item .count {
       font-size: 11px;
-      color: #3d5070;
+      color: #71717a;
+      background: #09090b;
+      padding: 2px 8px;
+      border-radius: 12px;
+      border: 1px solid #27272a;
+    }
+    
+    .collection-item.active .count {
+      color: #fafafa;
+      border-color: #52525b;
     }
 
-    .editor-footer .info-icon {
-      margin-right: 4px;
-      color: #3d5070;
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid #27272a;
     }
 
-    /* DIVIDER */
-    .divider {
+    /* RIGHT PANEL - TABLE VIEW */
+    .table-view {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background: #09090b;
+    }
+
+    /* Header matching height */
+    .table-header {
       display: flex;
       align-items: center;
-      margin: 20px 0;
-      gap: 12px;
+      border-bottom: 1px solid #27272a;
+      background: #09090b;
+      z-index: 2;
+      height: 48px; /* Fixed height to match sidebar header */
     }
 
-    .divider::before,
-    .divider::after {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(to right, transparent, #1e2d45);
-    }
-
-    .divider::after {
-      background: linear-gradient(to left, transparent, #1e2d45);
-    }
-
-    .divider-pill {
-      font-size: 11px;
-      font-weight: 600;
-      color: #475569;
-      background: #0f1826;
-      border: 1px solid #1e2d45;
-      border-radius: 20px;
-      padding: 4px 14px;
-      letter-spacing: 0.05em;
-    }
-
-    /* UPLOAD BOX */
-    .upload-box {
-      border: 1.5px dashed #1e3050;
-      border-radius: 14px;
-      padding: 28px 20px;
-      text-align: center;
-      background: rgba(8,14,26,0.7);
-      box-shadow: inset 0 0 24px rgba(0,0,0,0.3);
-      cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
-      margin-bottom: 6px;
-    }
-
-    .upload-box:hover {
-      border-color: #7C3AED;
-      background: rgba(124,58,237,0.04);
-    }
-
-    .upload-icon {
-      font-size: 34px;
-      margin-bottom: 12px;
-      display: block;
-      filter: drop-shadow(0 0 8px rgba(124,58,237,0.5));
-    }
-
-    .upload-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: #CBD5E1;
-      margin-bottom: 5px;
-    }
-
-    .upload-sub {
-      font-size: 11px;
-      color: #475569;
-      margin-bottom: 16px;
-    }
-
-    .choose-file-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 18px;
-      border-radius: 8px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid #2d4060;
-      color: #94A3B8;
+    /* Divider added to Table Header */
+    .th {
+      padding: 16px;
       font-size: 12px;
       font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .choose-file-btn:hover {
-      background: rgba(255,255,255,0.08);
-      border-color: #7C3AED;
-      color: #CBD5E1;
-    }
-
-    input[type="file"] { display: none; }
-
-    /* CONVERT BUTTON */
-    .convert-btn {
-      width: 100%;
-      height: 52px;
-      border-radius: 14px;
-      border: none;
-      font-weight: 600;
-      font-size: 15px;
-      cursor: pointer;
-      background: linear-gradient(90deg, #7C3AED 0%, #0ea5d4 100%);
-      color: white;
-      margin-top: 4px;
-      margin-bottom: 6px;
-      box-shadow: 0 8px 32px rgba(124,58,237,0.4), 0 2px 8px rgba(6,182,212,0.15);
-      transition: all 0.2s;
+      color: #a1a1aa;
+      border-right: 1px solid #27272a; /* New Divider */
+      height: 100%;
       display: flex;
+      align-items: center;
+    }
+    .th:last-child {
+      border-right: none;
+    }
+
+    .table-body {
+      flex: 1;
+      overflow-y: auto;
+      display: none;
+    }
+
+    .table-row {
+      display: flex;
+      border-bottom: 1px solid #18181b;
+      transition: background 0.1s;
+    }
+
+    .table-row:hover {
+      background: #131316;
+    }
+
+    /* Divider added to Table Data */
+    .td {
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #e4e4e7;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      border-right: 1px solid #27272a; /* New Divider */
+    }
+    .td:last-child {
+      border-right: none;
+    }
+
+    .color-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      border: 1px solid #3f3f46;
+      margin-right: 10px;
+      flex-shrink: 0;
+    }
+
+    /* EMPTY STATE */
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      letter-spacing: 0.01em;
+      text-align: center;
     }
 
-    .convert-btn:hover {
-      transform: scale(0.98);
-      box-shadow: 0 6px 24px rgba(124,58,237,0.5);
+    .empty-icon-bg {
+      width: 80px;
+      height: 72px;
+      background: #131316;
+      border-radius: 12px;
+      border: 1px solid #27272a;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 16px;
+      margin-bottom: 20px;
     }
 
-    .convert-btn:active {
-      transform: scale(0.96);
+    .empty-icon-line {
+      height: 6px;
+      background: #27272a;
+      border-radius: 4px;
     }
 
-    .convert-btn .btn-icon {
+    .empty-title {
       font-size: 16px;
+      font-weight: 500;
+      color: #fafafa;
+      margin-bottom: 6px;
     }
 
-    /* FOOTER */
-    .footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 14px;
-      padding-top: 12px;
-      border-top: 1px solid #111c2e;
+    .empty-subtitle {
+      font-size: 13px;
+      color: #71717a;
+      line-height: 1.5;
     }
 
-    .footer-left {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      color: #3d5070;
-    }
-
-    .footer-left .shield {
-      font-size: 12px;
-    }
-
-    .footer-right {
-      font-size: 11px;
-      color: #3d5070;
-    }
   </style>
 </head>
 
 <body>
 <div class="plugin-window">
-
-  <!-- TITLE BAR -->
-  <div class="title-bar">
-    <div class="title-bar-left">
-      <div class="title-bar-icon">⚡</div>
-      <span class="title-bar-name">TokenShift</span>
-    </div>
-    <button class="close-btn">✕</button>
-  </div>
-
-  <div class="app">
-
-    <!-- HEADER -->
-    <div class="header">
-      <div class="logo">⚡</div>
-      <div class="header-text">
-        <div class="brand">
-          <span class="brand-white">Token</span><span class="brand-gradient">Shift</span>
-        </div>
-        <div class="subtitle">JSON to Figma Variables</div>
-      </div>
-      <div class="sparkles">
-        <span class="sparkle-big">✦</span>
-        <span class="sparkle-small">✦ ✦</span>
-      </div>
-    </div>
-
-    <!-- SECTION 1: Paste JSON -->
-    <div class="section-label">
-      <span class="icon">📄</span>
-      <span>1. Paste JSON</span>
-    </div>
-
-    <div class="card">
-      <div class="card-header">
-        <span style="font-size:12px; color:#64748B; display:flex; align-items:center; gap:6px;">
-          <span style="font-size:13px;">📄</span> 1. Paste JSON
-        </span>
-        <span class="tag">Recommended</span>
-      </div>
-
-      <div class="editor-wrap">
-        <div class="editor-lines">
-          <div class="line-numbers" id="lineNumbers">
-            <span>1</span><span>2</span><span>3</span><span>4</span>
-            <span>5</span><span>6</span><span>7</span><span>8</span>
-            <span>9</span><span>10</span>
+  <div class="main-layout">
+    
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+      <div class="app">
+        
+        <!-- HEADER -->
+        <div class="header">
+          <div class="logo">⚡</div>
+          <div class="header-text">
+            <div class="brand">TokenShift</div>
+            <div class="subtitle">JSON to Figma Variables</div>
           </div>
-          <textarea id="jsonInput" spellcheck="false" placeholder='{ "colors": { ... } }'></textarea>
         </div>
-        <div class="editor-footer">
-          <span><span class="info-icon">ⓘ</span> Paste your JSON data above</span>
-          <span id="charCount">0 chars</span>
+
+        <!-- SECTION 1 -->
+        <div class="section-label-row">
+          <div class="section-label">Source JSON</div>
+          <button class="choose-file-btn" onclick="event.preventDefault(); document.getElementById('fileInput').click()">
+            Upload File
+          </button>
+        </div>
+        <input type="file" id="fileInput" accept=".json" />
+
+        <!-- JSON EDITOR AREA -->
+        <div class="editor-wrap" id="editorWrap">
+          <div class="editor-lines">
+            <div class="line-numbers" id="lineNumbers">
+              <!-- Dynamically populated -->
+            </div>
+            <textarea id="jsonInput" spellcheck="false" placeholder='{\n  "colors": {\n    "primary": "#ffffff"\n  }\n}'></textarea>
+          </div>
+          <div class="editor-footer">
+            <span>JSON Payload</span>
+            <span id="charCount">0 characters</span>
+          </div>
+        </div>
+
+        <!-- CONVERT BUTTON -->
+        <button id="importLeftBtn" class="convert-btn">
+          Generate Variables
+        </button>
+
+        <!-- FOOTER -->
+        <div class="footer">
+          <div class="footer-left">Your Data stay local. Nothing is sent anywhere.</div>
+          <div class="footer-right">v1.0.0</div>
         </div>
       </div>
     </div>
 
-    <!-- DIVIDER -->
-    <div class="divider">
-      <div class="divider-pill">OR</div>
-    </div>
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+      <div style="display: flex; height: 100%; min-height: 0;">
+        
+        <!-- Collections Sidebar -->
+        <div class="collections-sidebar">
+          <div class="sidebar-header-row">
+            <span>Variable Lists</span>
+          </div>
+          <div class="collections-list" id="collectionFilters">
+            <div class="collection-item active" data-type="All">
+              <span>All Types</span>
+              <span class="count" id="count-All">0</span>
+            </div>
+            <div class="collection-item" data-type="Color">
+              <span>Color</span>
+              <span class="count" id="count-Color">0</span>
+            </div>
+            <div class="collection-item" data-type="Number">
+              <span>Number</span>
+              <span class="count" id="count-Number">0</span>
+            </div>
+            <div class="collection-item" data-type="String">
+              <span>String</span>
+              <span class="count" id="count-String">0</span>
+            </div>
+            <div class="collection-item" data-type="Boolean">
+              <span>Boolean</span>
+              <span class="count" id="count-Boolean">0</span>
+            </div>
+          </div>
+          
+          <div class="sidebar-footer">
+            <button class="convert-btn" id="importRightBtn">
+              Sync to Figma
+            </button>
+          </div>
+        </div>
 
-    <!-- SECTION 2: Import JSON File -->
-    <div class="section-label">
-      <span class="icon">📄</span>
-      <span>2. Import JSON File</span>
-    </div>
+        <!-- Table View -->
+        <div class="table-view">
+          <div class="table-header">
+            <div class="th" style="flex: 1.5;">Names</div>
+            <div class="th" style="flex: 1.5;">Variable Value</div>
+          </div>
 
-    <label class="upload-box" for="fileInput">
-      <span class="upload-icon">☁️</span>
-      <div class="upload-title">Choose a JSON file or drag &amp; drop</div>
-      <div class="upload-sub">Only .json files are supported</div>
-      <button class="choose-file-btn" onclick="event.preventDefault(); document.getElementById('fileInput').click()">
-        📄 Choose File
-      </button>
-    </label>
-    <input type="file" id="fileInput" accept=".json" />
+          <!-- Dynamic Table Body -->
+          <div class="table-body" id="tableBody"></div>
 
-    <!-- SECTION 3: Convert -->
-    <div class="section-label" style="margin-top: 16px;">
-      <span class="icon">⚡</span>
-      <span>3. Convert</span>
-    </div>
+          <!-- Empty State Graphics -->
+          <div class="empty-state" id="emptyState">
+            <div class="empty-icon-bg">
+              <div class="empty-icon-line" style="width: 80%;"></div>
+              <div class="empty-icon-line" style="width: 100%; display: flex; gap: 8px; background: transparent;">
+                <div class="empty-icon-line" style="width: 20%;"></div>
+                <div class="empty-icon-line" style="width: 60%;"></div>
+              </div>
+              <div class="empty-icon-line" style="width: 60%; display: flex; gap: 8px; background: transparent;">
+                <div class="empty-icon-line" style="width: 30%;"></div>
+                <div class="empty-icon-line" style="width: 60%;"></div>
+              </div>
+            </div>
+            <h3 class="empty-title">Awaiting Input</h3>
+            <p class="empty-subtitle">Paste or upload valid JSON to<br>preview your variables.</p>
+          </div>
+        </div>
 
-    <button id="importBtn" class="convert-btn">
-      <span class="btn-icon">✨</span>
-      Convert to Variables
-    </button>
-
-    <!-- FOOTER -->
-    <div class="footer">
-      <div class="footer-left">
-        <span class="shield">🛡️</span>
-        <span>Your data stays local. Nothing is sent anywhere.</span>
       </div>
-      <div class="footer-right">v1.0.0</div>
     </div>
 
   </div>
@@ -512,29 +578,128 @@
 <script>
   const input = document.getElementById("jsonInput");
   const fileInput = document.getElementById("fileInput");
-  const button = document.getElementById("importBtn");
+  const importLeftBtn = document.getElementById("importLeftBtn");
+  const importRightBtn = document.getElementById("importRightBtn");
   const charCount = document.getElementById("charCount");
   const lineNumbers = document.getElementById("lineNumbers");
+  const editorWrap = document.getElementById("editorWrap");
+  const tableBody = document.getElementById("tableBody");
+  const emptyState = document.getElementById("emptyState");
+
+  let parsedVariables = [];
+  let currentFilter = "All";
+
+  function flatten(obj, parent = "", res = {}) {
+    for (let key in obj) {
+      const propName = parent ? `${parent}/${key}` : key;
+      if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {
+        flatten(obj[key], propName, res);
+      } else {
+        res[propName] = obj[key];
+      }
+    }
+    return res;
+  }
+
+  function detectType(value) {
+    if (typeof value === "number") return "Number";
+    if (typeof value === "boolean") return "Boolean";
+    if (typeof value === "string") {
+      if (/^#([0-9A-F]{3}){1,2}$/i.test(value) || /^rgba?\(/i.test(value)) return "Color";
+      return "String";
+    }
+    return null;
+  }
+
+  function updatePreview() {
+    try {
+      const jsonStr = input.value.trim();
+      if (!jsonStr) throw new Error("Empty");
+      
+      const parsed = JSON.parse(jsonStr);
+      const flat = flatten(parsed);
+      
+      parsedVariables = [];
+      for (const key in flat) {
+        const type = detectType(flat[key]);
+        if (type) {
+          parsedVariables.push({ name: key, value: flat[key], type });
+        }
+      }
+    } catch (e) {
+      parsedVariables = []; 
+    }
+    
+    renderTable();
+  }
+
+  function renderTable() {
+    document.getElementById("count-All").textContent = parsedVariables.length;
+    document.getElementById("count-Color").textContent = parsedVariables.filter(v => v.type === "Color").length;
+    document.getElementById("count-Number").textContent = parsedVariables.filter(v => v.type === "Number").length;
+    document.getElementById("count-String").textContent = parsedVariables.filter(v => v.type === "String").length;
+    document.getElementById("count-Boolean").textContent = parsedVariables.filter(v => v.type === "Boolean").length;
+
+    const filteredVars = currentFilter === "All" 
+      ? parsedVariables 
+      : parsedVariables.filter(v => v.type === currentFilter);
+
+    if (filteredVars.length === 0) {
+      tableBody.style.display = "none";
+      emptyState.style.display = "flex";
+      tableBody.innerHTML = "";
+    } else {
+      tableBody.style.display = "block";
+      emptyState.style.display = "none";
+      
+      tableBody.innerHTML = filteredVars.map(v => {
+        let valueHTML = v.value;
+        if (v.type === "Color") {
+          valueHTML = `<div class="color-swatch" style="background-color: ${v.value}"></div><span>${v.value}</span>`;
+        }
+        return `
+          <div class="table-row">
+            <div class="td" style="flex: 1.5; word-break: break-all; color: #a1a1aa;">${v.name}</div>
+            <div class="td" style="flex: 1.5; word-break: break-all; font-weight: 500;">${valueHTML}</div>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+
+  document.querySelectorAll('.collection-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+      document.querySelectorAll('.collection-item').forEach(el => el.classList.remove('active'));
+      e.currentTarget.classList.add('active');
+      currentFilter = e.currentTarget.dataset.type;
+      renderTable();
+    });
+  });
+
+  input.addEventListener('scroll', () => { lineNumbers.scrollTop = input.scrollTop; });
 
   function updateLineNumbers() {
     const lines = input.value.split('\n').length;
+    const displayLines = Math.max(lines, 40); 
     const current = lineNumbers.children.length;
-    if (lines > current) {
-      for (let i = current + 1; i <= lines; i++) {
+    
+    if (displayLines > current) {
+      for (let i = current + 1; i <= displayLines; i++) {
         const span = document.createElement('span');
         span.textContent = i;
         lineNumbers.appendChild(span);
       }
-    } else if (lines < current) {
-      while (lineNumbers.children.length > lines) {
+    } else if (displayLines < current) {
+      while (lineNumbers.children.length > displayLines) {
         lineNumbers.removeChild(lineNumbers.lastChild);
       }
     }
   }
 
   input.addEventListener("input", () => {
-    charCount.textContent = input.value.length + " chars";
+    charCount.textContent = new Blob([input.value]).size + " bytes";
     updateLineNumbers();
+    updatePreview();
   });
 
   fileInput.onchange = async (e) => {
@@ -542,40 +707,41 @@
     if (!file) return;
     const text = await file.text();
     input.value = text;
-    charCount.textContent = text.length + " chars";
+    charCount.textContent = new Blob([text]).size + " bytes";
     updateLineNumbers();
+    updatePreview();
   };
 
-  // Drag and drop
-  const uploadBox = document.querySelector('.upload-box');
-  uploadBox.addEventListener('dragover', (e) => {
+  editorWrap.addEventListener('dragover', (e) => {
     e.preventDefault();
-    uploadBox.style.borderColor = '#7C3AED';
-    uploadBox.style.background = 'rgba(124,58,237,0.06)';
+    editorWrap.style.borderColor = '#52525b';
   });
-  uploadBox.addEventListener('dragleave', () => {
-    uploadBox.style.borderColor = '';
-    uploadBox.style.background = '';
+  
+  editorWrap.addEventListener('dragleave', () => {
+    editorWrap.style.borderColor = '#27272a';
   });
-  uploadBox.addEventListener('drop', async (e) => {
+  
+  editorWrap.addEventListener('drop', async (e) => {
     e.preventDefault();
-    uploadBox.style.borderColor = '';
-    uploadBox.style.background = '';
+    editorWrap.style.borderColor = '#27272a';
     const file = e.dataTransfer.files[0];
     if (file && file.name.endsWith('.json')) {
       const text = await file.text();
       input.value = text;
-      charCount.textContent = text.length + " chars";
+      charCount.textContent = new Blob([text]).size + " bytes";
       updateLineNumbers();
+      updatePreview();
     }
   });
 
-  button.onclick = () => {
-    parent.postMessage(
-      { pluginMessage: { type: "IMPORT_JSON", data: input.value } },
-      "*"
-    );
+  updateLineNumbers();
+
+  const sendToFigma = () => {
+    parent.postMessage({ pluginMessage: { type: "IMPORT_JSON", data: input.value } }, "*");
   };
+
+  importLeftBtn.onclick = sendToFigma;
+  importRightBtn.onclick = sendToFigma;
 </script>
 </body>
 </html>

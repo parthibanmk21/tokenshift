@@ -9,7 +9,7 @@
 // This shows the HTML page in "ui.html".
 /// <reference types="@figma/plugin-typings" />
 
-figma.showUI(__html__, { width: 900, height: 700 });
+figma.showUI(__html__, { width: 1200, height: 700 });
 
 // Listen from UI
 figma.ui.onmessage = async (msg) => {

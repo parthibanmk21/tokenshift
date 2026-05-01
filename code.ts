@@ -7,31 +7,82 @@
 // full browser environment (See https://www.figma.com/plugin-docs/how-plugins-run).
 
 // This shows the HTML page in "ui.html".
-figma.showUI(__html__);
+/// <reference types="@figma/plugin-typings" />
 
-// Calls to "parent.postMessage" from within the HTML page will trigger this
-// callback. The callback will be passed the "pluginMessage" property of the
-// posted message.
-figma.ui.onmessage =  (msg: {type: string, count: number}) => {
-  // One way of distinguishing between different types of messages sent from
-  // your HTML page is to use an object with a "type" property like this.
-  if (msg.type === 'create-shapes') {
-    // This plugin creates rectangles on the screen.
-    const numberOfRectangles = msg.count;
+figma.showUI(__html__, { width: 900, height: 700 });
 
-    const nodes: SceneNode[] = [];
-    for (let i = 0; i < numberOfRectangles; i++) {
-      const rect = figma.createRectangle();
-      rect.x = i * 150;
-      rect.fills = [{ type: 'SOLID', color: { r: 1, g: 0.5, b: 0 } }];
-      figma.currentPage.appendChild(rect);
-      nodes.push(rect);
+// Listen from UI
+figma.ui.onmessage = async (msg) => {
+  if (msg.type === "IMPORT_JSON") {
+    try {
+      const data = JSON.parse(msg.data);
+      await processJSON(data);
+      figma.notify("✅ Variables created successfully");
+    } catch (e) {
+      figma.notify("❌ Invalid JSON");
     }
-    figma.currentPage.selection = nodes;
-    figma.viewport.scrollAndZoomIntoView(nodes);
   }
-
-  // Make sure to close the plugin when you're done. Otherwise the plugin will
-  // keep running, which shows the cancel button at the bottom of the screen.
-  figma.closePlugin();
 };
+
+// Flatten JSON
+function flatten(obj: any, parent = "", res: any = {}) {
+  for (let key in obj) {
+    const propName = parent ? `${parent}/${key}` : key;
+
+    if (typeof obj[key] === "object" && obj[key] !== null) {
+      flatten(obj[key], propName, res);
+    } else {
+      res[propName] = obj[key];
+    }
+  }
+  return res;
+}
+
+// Detect type
+function detectType(value: any) {
+  if (typeof value === "number") return "FLOAT";
+  if (typeof value === "boolean") return "BOOLEAN";
+  if (typeof value === "string") {
+    if (/^#([0-9A-F]{3}){1,2}$/i.test(value)) return "COLOR";
+    return "STRING";
+  }
+}
+
+// HEX → RGB
+function hexToRgb(hex: string) {
+  const bigint = parseInt(hex.slice(1), 16);
+  return {
+    r: ((bigint >> 16) & 255) / 255,
+    g: ((bigint >> 8) & 255) / 255,
+    b: (bigint & 255) / 255,
+    a: 1
+  };
+}
+
+// Main processor
+async function processJSON(data: any) {
+  const flat = flatten(data);
+
+  const collection = figma.variables.createVariableCollection("TokenShift");
+
+  for (const key in flat) {
+    const value = flat[key];
+    const type = detectType(value);
+
+    if (!type) continue;
+
+    const variable = figma.variables.createVariable(
+      key,
+      collection.id,
+      type as VariableResolvedDataType
+    );
+
+    let finalValue = value;
+
+    if (type === "COLOR") {
+      finalValue = hexToRgb(value);
+    }
+
+    variable.setValueForMode(collection.modes[0].modeId, finalValue);
+  }
+}

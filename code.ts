@@ -13,14 +13,33 @@ interface ParsedVariable {
 
 // Listen from UI
 figma.ui.onmessage = async (msg) => {
-  if (msg.type === "SYNC_VARIABLES") {
-    try {
-      const result = await syncVariablesToFigma(msg.data);
-      figma.notify(`✅ Synced! Created: ${result.created}, Updated: ${result.updated}`);
-    } catch (e: any) {
-      console.error(e);
-      figma.notify(`❌ Sync Error: ${e.message}`);
+  // Step 1: UI asks backend to check if variables already exist
+  if (msg.type === "CHECK_EXISTING") {
+    const collections = await figma.variables.getLocalVariableCollectionsAsync();
+    const collection = collections.find(c => c.name === "TokenShift");
+    
+    if (collection) {
+      // If collection exists, let's see if any variables match the incoming names
+      const allVariables = await figma.variables.getLocalVariablesAsync();
+      const existingVariables = allVariables.filter(v => v.variableCollectionId === collection.id);
+      
+      const hasOverlap = msg.data.some((incoming: ParsedVariable) => 
+        existingVariables.some(existing => existing.name === incoming.name.replace(/[{}.]/g, '_'))
+      );
+
+      if (hasOverlap) {
+        // Trigger dialog in UI
+        figma.ui.postMessage({ type: "PROMPT_OVERRIDE" });
+        return; 
+      }
     }
+    // No collection or no overlap? Just sync directly.
+    await executeSync(msg.data, "OVERRIDE_ALL");
+  }
+
+  // Step 2: UI confirms sync strategy
+  if (msg.type === "SYNC_VARIABLES") {
+    await executeSync(msg.data, msg.overrideMode);
   }
 };
 
@@ -29,7 +48,6 @@ function parseColor(colorStr: string) {
   colorStr = colorStr.trim();
   
   if (/^#/.test(colorStr)) {
-    // HEX parsing
     let hex = colorStr.replace('#', '');
     if (hex.length === 3) {
       hex = hex.split('').map(char => char + char).join('');
@@ -40,7 +58,6 @@ function parseColor(colorStr: string) {
     const a = hex.length === 8 ? parseInt(hex.substring(6, 8), 16) / 255 : 1;
     return { r, g, b, a };
   } else if (/^rgba?/.test(colorStr)) {
-    // RGB/RGBA parsing
     const match = colorStr.match(/[\d.]+/g);
     if (match && match.length >= 3) {
       return {
@@ -51,62 +68,91 @@ function parseColor(colorStr: string) {
       };
     }
   }
-  // Fallback to solid black
   return { r: 0, g: 0, b: 0, a: 1 };
 }
 
-// Main execution process directly bridging UI arrays to Figma Variables
-async function syncVariablesToFigma(variables: ParsedVariable[]) {
-  // Use the new Async methods required by Figma
-  const collections = await figma.variables.getLocalVariableCollectionsAsync();
-  let collection = collections.find(c => c.name === "TokenShift");
-  
-  if (!collection) {
-    collection = figma.variables.createVariableCollection("TokenShift");
+// Main Execution Function taking the overrideMode into account
+async function executeSync(variables: ParsedVariable[], overrideMode: "NEW_ONLY" | "OVERRIDE_ALL") {
+  try {
+    const collections = await figma.variables.getLocalVariableCollectionsAsync();
+    let collection = collections.find(c => c.name === "TokenShift");
+    
+    if (!collection) {
+      collection = figma.variables.createVariableCollection("TokenShift");
+    }
+
+    const allVariables = await figma.variables.getLocalVariablesAsync();
+    const existingVariables = allVariables.filter(v => v.variableCollectionId === collection!.id);
+    
+    let created = 0;
+    let updated = 0;
+    let skipped = 0;
+    let failed = 0;
+
+    for (const v of variables) {
+      try {
+          // SAFEGUARD 1: Figma names cannot contain {, }, or .
+          const safeName = v.name.replace(/[{}.]/g, '_');
+
+          let figmaType: VariableResolvedDataType;
+          switch(v.type) {
+              case "Color": figmaType = "COLOR"; break;
+              case "Number": figmaType = "FLOAT"; break;
+              case "Boolean": figmaType = "BOOLEAN"; break;
+              case "String": default: figmaType = "STRING"; break;
+          }
+
+          let variable = existingVariables.find(ev => ev.name === safeName);
+
+          if (!variable) {
+              // SAFEGUARD 2: Passing collection to avoid incremental mode errors
+              // @ts-ignore
+              variable = figma.variables.createVariable(safeName, collection, figmaType);
+              created++;
+          } else {
+              // It exists. Check user's dialog decision.
+              if (overrideMode === "NEW_ONLY") {
+                 skipped++;
+                 continue; 
+              }
+
+              if (variable.resolvedType !== figmaType) {
+                  console.warn(`Skipped updating ${safeName}: Type mismatch in Figma.`);
+                  skipped++;
+                  continue;
+              }
+              updated++;
+          }
+
+          // SAFEGUARD 3: Strictly cast final values to prevent strict-type crashes from Figma API
+          let finalValue: VariableValue = v.value;
+          if (figmaType === "COLOR") {
+              finalValue = parseColor(String(v.value));
+          } else if (figmaType === "FLOAT") {
+              finalValue = Number(v.value);
+          } else if (figmaType === "BOOLEAN") {
+              finalValue = Boolean(v.value);
+          } else if (figmaType === "STRING") {
+              finalValue = String(v.value);
+          }
+
+          variable.setValueForMode(collection.modes[0].modeId, finalValue);
+      } catch(err) {
+          console.error(`Error with ${v.name}:`, err);
+          failed++; // Safely fail the single variable and continue loop
+      }
+    }
+
+    // Report results back to User
+    let msg = `✅ Sync complete! Created: ${created}`;
+    if (updated > 0) msg += `, Updated: ${updated}`;
+    if (skipped > 0) msg += `, Skipped: ${skipped}`;
+    if (failed > 0) msg += ` ⚠️ Failed: ${failed}`;
+
+    figma.notify(msg);
+
+  } catch (e: any) {
+    console.error(e);
+    figma.notify(`❌ Sync Error: ${e.message}`);
   }
-
-  // Pre-load existing variables using Async to prevent duplicates/crashing
-  const allVariables = await figma.variables.getLocalVariablesAsync();
-  const existingVariables = allVariables.filter(v => v.variableCollectionId === collection!.id);
-  
-  let created = 0;
-  let updated = 0;
-
-  for (const v of variables) {
-    // Map UI types to Figma backend types
-    let figmaType: VariableResolvedDataType;
-    switch(v.type) {
-        case "Color": figmaType = "COLOR"; break;
-        case "Number": figmaType = "FLOAT"; break;
-        case "Boolean": figmaType = "BOOLEAN"; break;
-        case "String": default: figmaType = "STRING"; break;
-    }
-
-    // Identify if the variable already exists to update it rather than creating a duplicate
-    let variable = existingVariables.find(ev => ev.name === v.name);
-
-    if (!variable) {
-        // FIX: Passed `collection` directly instead of `collection.id`
-        variable = figma.variables.createVariable(v.name, collection, figmaType);
-        created++;
-    } else {
-        // Prevent fatal errors if user changed a type of an existing variable key
-        if (variable.resolvedType !== figmaType) {
-            console.warn(`Skipped updating ${v.name}: Type mismatch in Figma.`);
-            continue;
-        }
-        updated++;
-    }
-
-    // Resolve Value Formats
-    let finalValue = v.value;
-    if (figmaType === "COLOR") {
-        finalValue = parseColor(String(v.value));
-    }
-
-    // Apply the update to Figma Core
-    variable.setValueForMode(collection.modes[0].modeId, finalValue);
-  }
-
-  return { created, updated };
 }

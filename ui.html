@@ -36,6 +36,7 @@
       width: 100%;
       height: 100%;
       background: #09090b;
+      position: relative; 
     }
 
     /* LAYOUT CONTAINERS */
@@ -485,11 +486,103 @@
       line-height: 1.5;
     }
 
+    /* DIALOG BOX STYLES */
+    .dialog-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .dialog-box {
+      background: #131316;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      padding: 24px;
+      width: 400px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .dialog-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fafafa;
+    }
+
+    .dialog-text {
+      font-size: 13px;
+      color: #a1a1aa;
+      line-height: 1.5;
+    }
+
+    .dialog-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .dialog-btn {
+      width: 100%;
+      height: 36px;
+      border-radius: 6px;
+      border: none;
+      font-weight: 500;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-override {
+      background: #ef4444; 
+      color: white;
+    }
+    .btn-override:hover { background: #dc2626; }
+
+    .btn-update {
+      background: #27272a;
+      color: #fafafa;
+      border: 1px solid #3f3f46;
+    }
+    .btn-update:hover { background: #3f3f46; }
+
+    .btn-cancel {
+      background: transparent;
+      color: #a1a1aa;
+      border: 1px solid transparent;
+    }
+    .btn-cancel:hover { background: #18181b; color: #fafafa; }
+
   </style>
 </head>
 
 <body>
 <div class="plugin-window">
+  
+  <!-- DIALOG OVERLAY -->
+  <div class="dialog-overlay" id="overrideDialog">
+    <div class="dialog-box">
+      <div class="dialog-title">Existing Variables Found</div>
+      <div class="dialog-text">Are you sure you want to override existing values in Figma with the ones from your JSON?</div>
+      <div class="dialog-actions">
+        <button class="dialog-btn btn-update" id="btnUpdateOnly">Update New Names Only</button>
+        <button class="dialog-btn btn-override" id="btnOverrideAll">Yes, Override All</button>
+        <button class="dialog-btn btn-cancel" id="btnCancelDialog">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <div class="main-layout">
     
     <!-- LEFT PANEL -->
@@ -517,9 +610,7 @@
         <!-- JSON EDITOR AREA -->
         <div class="editor-wrap" id="editorWrap">
           <div class="editor-lines">
-            <div class="line-numbers" id="lineNumbers">
-              <!-- Dynamically populated -->
-            </div>
+            <div class="line-numbers" id="lineNumbers"></div>
             <textarea id="jsonInput" spellcheck="false" placeholder='{\n  "colors": {\n    "primary": "#ffffff"\n  }\n}'></textarea>
           </div>
           <div class="editor-footer">
@@ -590,7 +681,7 @@
           <!-- Dynamic Table Body -->
           <div class="table-body" id="tableBody"></div>
 
-          <!-- Empty State Graphics -->
+          <!-- Empty State -->
           <div class="empty-state" id="emptyState">
             <div class="empty-icon-bg">
               <div class="empty-icon-line" style="width: 80%;"></div>
@@ -624,6 +715,12 @@
   const editorWrap = document.getElementById("editorWrap");
   const tableBody = document.getElementById("tableBody");
   const emptyState = document.getElementById("emptyState");
+  
+  // Dialog Elements
+  const overrideDialog = document.getElementById("overrideDialog");
+  const btnUpdateOnly = document.getElementById("btnUpdateOnly");
+  const btnOverrideAll = document.getElementById("btnOverrideAll");
+  const btnCancelDialog = document.getElementById("btnCancelDialog");
 
   let parsedVariables = [];
   let currentFilter = "All";
@@ -668,11 +765,9 @@
     } catch (e) {
       parsedVariables = []; 
     }
-    
     renderTable();
   }
 
-  // Helper to generate Row HTML easily
   function createRowHTML(name, valueHTML, isGrouped = false) {
     const paddingLeft = isGrouped ? '32px' : '16px';
     return `
@@ -703,7 +798,6 @@
       emptyState.style.display = "none";
       
       if (currentFilter === "All") {
-        // Flat Rendering for "All Types"
         tableBody.innerHTML = filteredVars.map(v => {
           let valueHTML = String(v.value);
           if (v.type === "Color") {
@@ -712,7 +806,6 @@
           return createRowHTML(v.name, valueHTML, false);
         }).join('');
       } else {
-        // Grouped Rendering for specific Types
         const groups = {};
         filteredVars.forEach(v => {
           const parts = v.name.split('/');
@@ -720,8 +813,8 @@
           let itemName = v.name;
 
           if (parts.length >= 3) {
-            groupName = parts[1]; // e.g., 'primary' from 'colors/primary/default'
-            itemName = parts.slice(2).join('/'); // 'default'
+            groupName = parts[1]; 
+            itemName = parts.slice(2).join('/'); 
           } else if (parts.length === 2) {
             groupName = "Base";
             itemName = parts[1];
@@ -827,20 +920,43 @@
 
   updateLineNumbers();
 
+  // ACTIONS
   importLeftBtn.onclick = () => {
     updatePreview();
   };
 
-  // UPDATED: Sends parsed data directly to backend
-  importRightBtn.onclick = () => {
-    if (parsedVariables.length > 0) {
-      parent.postMessage({ pluginMessage: { type: "SYNC_VARIABLES", data: parsedVariables } }, "*");
-    } else {
-      updatePreview();
-      if (parsedVariables.length > 0) {
-        parent.postMessage({ pluginMessage: { type: "SYNC_VARIABLES", data: parsedVariables } }, "*");
-      }
+  // Safe Listener for Figma Messages
+  window.onmessage = (event) => {
+    const msg = event.data?.pluginMessage;
+    // Listen for Figma telling us variables exist so we can show the dialog
+    if (msg && msg.type === "PROMPT_OVERRIDE") {
+      overrideDialog.style.display = "flex";
     }
+  };
+
+  importRightBtn.onclick = () => {
+    if (parsedVariables.length === 0) {
+      updatePreview();
+    }
+    // Ask Figma to check for existing variables first
+    if (parsedVariables.length > 0) {
+      parent.postMessage({ pluginMessage: { type: "CHECK_EXISTING", data: parsedVariables } }, "*");
+    }
+  };
+
+  // Dialog Actions
+  btnUpdateOnly.onclick = () => {
+    overrideDialog.style.display = "none";
+    parent.postMessage({ pluginMessage: { type: "SYNC_VARIABLES", data: parsedVariables, overrideMode: "NEW_ONLY" } }, "*");
+  };
+
+  btnOverrideAll.onclick = () => {
+    overrideDialog.style.display = "none";
+    parent.postMessage({ pluginMessage: { type: "SYNC_VARIABLES", data: parsedVariables, overrideMode: "OVERRIDE_ALL" } }, "*");
+  };
+
+  btnCancelDialog.onclick = () => {
+    overrideDialog.style.display = "none";
   };
 </script>
 </body>

@@ -1,517 +1,1154 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     /* Minimal Custom Scrollbar */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: #52525b; }
-
-    body, html {
-      font-family: 'Inter', sans-serif; background: #09090b; color: #fafafa;
-      height: 100%; overflow: hidden; 
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
     }
 
-    .plugin-window { display: flex; flex-direction: column; width: 100%; height: 100%; background: #09090b; position: relative; }
-    .main-layout { display: flex; flex: 1; height: 100%; min-height: 0; }
-    
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #3f3f46;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #52525b;
+    }
+
+    body,
+    html {
+      font-family: 'Inter', sans-serif;
+      background: #09090b;
+      color: #fafafa;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .plugin-window {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+      background: #09090b;
+      position: relative;
+    }
+
+    .main-layout {
+      display: flex;
+      flex: 1;
+      height: 100%;
+      min-height: 0;
+    }
+
     .left-panel {
-      width: 360px; flex-shrink: 0; border-right: 1px solid #27272a;
-      background: #131316; display: flex; flex-direction: column; height: 100%; min-height: 0;
+      width: 360px;
+      flex-shrink: 0;
+      border-right: 1px solid #27272a;
+      background: #131316;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 0;
     }
-    .right-panel { flex: 1; display: flex; background: #09090b; overflow: hidden; flex-direction: column; min-height: 0; }
+
+    .right-panel {
+      flex: 1;
+      display: flex;
+      background: #09090b;
+      overflow: hidden;
+      flex-direction: column;
+      min-height: 0;
+    }
 
     /* APP CONTENT */
-    .app { padding: 16px 12px 12px 12px; flex: 1; display: flex; flex-direction: column; min-height: 0; }
-    .header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; flex-shrink: 0; }
+    .app {
+      padding: 16px 12px 12px 12px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+      flex-shrink: 0;
+    }
+
     .logo {
-      width: 44px; height: 44px; border-radius: 12px; background: #27272a; 
-      border: 1px solid #3f3f46; display: flex; align-items: center; justify-content: center;
-      font-size: 20px; color: #f97316; flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: #f97316;
+      flex-shrink: 0;
     }
-    .header-text .brand { font-size: 18px; font-weight: 600; line-height: 1.2; color: #fafafa; }
-    .header-text .subtitle { font-size: 12px; color: #a1a1aa; margin-top: 4px; }
 
-    .section-label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-shrink: 0; }
-    .section-label { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: #fafafa; }
-    .choose-file-btn { 
-      display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 6px; 
-      background: #18181b; border: 1px solid #3f3f46; color: #e4e4e7; font-size: 11px; font-weight: 500; 
-      cursor: pointer; transition: background 0.2s ease, border-color 0.2s ease; font-family: 'Inter', sans-serif; 
+    .header-text .brand {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.2;
+      color: #fafafa;
     }
-    .choose-file-btn:hover { background: #27272a; border-color: #52525b; }
-    input[type="file"] { display: none; }
-    
+
+    .header-text .subtitle {
+      font-size: 12px;
+      color: #a1a1aa;
+      margin-top: 4px;
+    }
+
+    .section-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #fafafa;
+    }
+
+    .choose-file-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      background: #18181b;
+      border: 1px solid #3f3f46;
+      color: #e4e4e7;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .choose-file-btn:hover {
+      background: #27272a;
+      border-color: #52525b;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
     /* JSON EDITOR */
-    .editor-wrap { 
-      flex: 1; display: flex; flex-direction: column; background: #09090b; border-radius: 8px; 
-      border: 1px solid #27272a; margin-bottom: 16px; min-height: 0; transition: border-color 0.2s;
+    .editor-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #09090b;
+      border-radius: 8px;
+      border: 1px solid #27272a;
+      margin-bottom: 16px;
+      min-height: 0;
+      transition: border-color 0.2s;
     }
-    .editor-wrap:focus-within { border-color: #52525b; }
-    .editor-lines { flex: 1; display: flex; min-height: 0; overflow: hidden; }
-    .line-numbers { 
-      display: flex; flex-direction: column; padding: 12px 8px; background: #131316; border-right: 1px solid #27272a; 
-      min-width: 36px; text-align: right; overflow-y: hidden; user-select: none;
-    }
-    .line-numbers span { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #52525b; line-height: 1.6; }
-    textarea#jsonInput { 
-      flex: 1; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #e4e4e7; 
-      background: transparent; border: none; outline: none; resize: none; width: 100%; padding: 12px; 
-      line-height: 1.6; caret-color: #fafafa; overflow-y: auto;
-    }
-    textarea#jsonInput::placeholder { color: #52525b; }
-    .editor-footer { 
-      display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; 
-      border-top: 1px solid #27272a; font-size: 11px; color: #a1a1aa; flex-shrink: 0; background: #131316;
-    }
-    
-    /* BUTTONS */
-    .convert-btn { 
-      width: 100%; height: 36px; border-radius: 6px; border: none; font-weight: 500; font-size: 13px; 
-      cursor: pointer; background: #fafafa; color: #09090b; transition: background 0.15s ease; 
-      display: flex; align-items: center; justify-content: center; gap: 8px; flex-shrink: 0;
-    }
-    .convert-btn:hover { background: #e4e4e7; }
-    .sidebar-footer .convert-btn { background: #27272a; color: #fafafa; border: 1px solid #3f3f46; }
-    .sidebar-footer .convert-btn:hover { background: #3f3f46; }
 
-    .footer { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; padding-top: 16px; border-top: 1px solid #27272a; flex-shrink: 0; }
-    .footer-left, .footer-right { font-size: 11px; color: #71717a; }
+    .editor-wrap:focus-within {
+      border-color: #52525b;
+    }
+
+    .editor-lines {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .line-numbers {
+      display: flex;
+      flex-direction: column;
+      padding: 12px 8px;
+      background: #131316;
+      border-right: 1px solid #27272a;
+      min-width: 36px;
+      text-align: right;
+      overflow-y: hidden;
+      user-select: none;
+    }
+
+    .line-numbers span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #52525b;
+      line-height: 1.6;
+    }
+
+    textarea#jsonInput {
+      flex: 1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #e4e4e7;
+      background: transparent;
+      border: none;
+      outline: none;
+      resize: none;
+      width: 100%;
+      padding: 12px;
+      line-height: 1.6;
+      caret-color: #fafafa;
+      overflow-y: auto;
+    }
+
+    textarea#jsonInput::placeholder {
+      color: #52525b;
+    }
+
+    .editor-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      border-top: 1px solid #27272a;
+      font-size: 11px;
+      color: #a1a1aa;
+      flex-shrink: 0;
+      background: #131316;
+    }
+
+    /* BUTTONS */
+    .convert-btn {
+      width: 100%;
+      height: 36px;
+      border-radius: 6px;
+      border: none;
+      font-weight: 500;
+      font-size: 13px;
+      cursor: pointer;
+      background: #fafafa;
+      color: #09090b;
+      transition: background 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .convert-btn:hover {
+      background: #e4e4e7;
+    }
+
+    .sidebar-footer .convert-btn {
+      background: #27272a;
+      color: #fafafa;
+      border: 1px solid #3f3f46;
+    }
+
+    .sidebar-footer .convert-btn:hover {
+      background: #3f3f46;
+    }
+
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #27272a;
+      flex-shrink: 0;
+    }
+
+    .footer-left,
+    .footer-right {
+      font-size: 11px;
+      color: #71717a;
+    }
 
     /* SIDEBAR & DROPDOWN */
-    .collections-sidebar { width: 240px; border-right: 1px solid #27272a; display: flex; flex-direction: column; background: #131316; }
-    .sidebar-header-row {
-      display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #27272a;
-      font-size: 14px; font-weight: 600; color: #fafafa; letter-spacing: 0.05em; height: 48px; position: relative;
+    .collections-sidebar {
+      width: 240px;
+      border-right: 1px solid #27272a;
+      display: flex;
+      flex-direction: column;
+      background: #131316;
     }
-    
-    .export-dropdown {
-      position: absolute; right: 16px; top: 40px; background: #18181b; border: 1px solid #3f3f46;
-      border-radius: 6px; box-shadow: 0 4px 20px rgba(0,0,0,0.8); display: none; flex-direction: column;
-      width: 160px; z-index: 100; overflow: hidden;
-    }
-    .export-dropdown.open { display: flex; }
-    .dropdown-item {
-      padding: 10px 12px; font-size: 12px; color: #e4e4e7; cursor: pointer; transition: 0.15s; font-weight: 500;
-    }
-    .dropdown-item:hover { background: #27272a; color: #fafafa; }
-    .dropdown-item:not(:last-child) { border-bottom: 1px solid #27272a; }
 
-    .collections-list { padding: 12px 8px; display: flex; flex-direction: column; gap: 2px; flex: 1; overflow-y: auto; }
+    .sidebar-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid #27272a;
+      font-size: 14px;
+      font-weight: 600;
+      color: #fafafa;
+      letter-spacing: 0.05em;
+      height: 48px;
+      position: relative;
+    }
+
+    .export-dropdown {
+      position: absolute;
+      right: 16px;
+      top: 40px;
+      background: #18181b;
+      border: 1px solid #3f3f46;
+      border-radius: 6px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+      display: none;
+      flex-direction: column;
+      width: 160px;
+      z-index: 100;
+      overflow: hidden;
+    }
+
+    .export-dropdown.open {
+      display: flex;
+    }
+
+    .dropdown-item {
+      padding: 10px 12px;
+      font-size: 12px;
+      color: #e4e4e7;
+      cursor: pointer;
+      transition: 0.15s;
+      font-weight: 500;
+    }
+
+    .dropdown-item:hover {
+      background: #27272a;
+      color: #fafafa;
+    }
+
+    .dropdown-item:not(:last-child) {
+      border-bottom: 1px solid #27272a;
+    }
+
+    .collections-list {
+      padding: 12px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
     .collection-item {
-      display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-radius: 6px;
-      font-size: 13px; font-weight: 500; color: #a1a1aa; cursor: pointer; transition: all 0.15s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #a1a1aa;
+      cursor: pointer;
+      transition: all 0.15s;
     }
-    .collection-item:hover, .collection-item.active { background: #27272a; color: #fafafa; }
+
+    .collection-item:hover,
+    .collection-item.active {
+      background: #27272a;
+      color: #fafafa;
+    }
+
     .collection-item .count {
-      font-size: 11px; color: #71717a; background: #09090b; padding: 2px 8px; border-radius: 12px; border: 1px solid #27272a;
+      font-size: 11px;
+      color: #71717a;
+      background: #09090b;
+      padding: 2px 8px;
+      border-radius: 12px;
+      border: 1px solid #27272a;
     }
-    .collection-item.active .count { color: #fafafa; border-color: #52525b; }
-    .sidebar-footer { padding: 16px; border-top: 1px solid #27272a; display: flex; flex-direction: column; gap: 8px; }
+
+    .collection-item.active .count {
+      color: #fafafa;
+      border-color: #52525b;
+    }
+
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid #27272a;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
 
     /* RIGHT PANEL - TABLE VIEW */
-    .table-view { flex: 1; display: flex; flex-direction: column; position: relative; background: #09090b; }
-    .table-header { display: flex; align-items: center; border-bottom: 1px solid #27272a; background: #09090b; z-index: 2; height: 48px; }
-    .th { padding: 16px; font-size: 12px; font-weight: 500; color: #a1a1aa; border-right: 1px solid #27272a; height: 100%; display: flex; align-items: center; justify-content: space-between;}
-    .th:last-child { border-right: none; }
-    
+    .table-view {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background: #09090b;
+    }
+
+    .table-header {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #27272a;
+      background: #09090b;
+      z-index: 2;
+      height: 48px;
+    }
+
+    .th {
+      padding: 16px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #a1a1aa;
+      border-right: 1px solid #27272a;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .th:last-child {
+      border-right: none;
+    }
+
     .add-var-btn {
-      background: transparent; border: 1px solid #3f3f46; color: #e4e4e7; border-radius: 4px;
-      padding: 4px 8px; font-size: 11px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 4px;
+      background: transparent;
+      border: 1px solid #3f3f46;
+      color: #e4e4e7;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
       transition: 0.15s ease;
     }
-    .add-var-btn:hover { background: #27272a; color: #fafafa; border-color: #52525b; }
-    
-    .table-body { flex: 1; overflow-y: auto; display: none; }
-    .table-row { position: relative; display: flex; border-bottom: 1px solid #18181b; transition: background 0.1s; }
-    .table-row:hover { background: #131316; }
-    .td {
-      padding: 12px 16px; font-size: 13px; color: #e4e4e7; font-family: 'JetBrains Mono', monospace;
-      display: flex; align-items: center; border-right: 1px solid #27272a; 
+
+    .add-var-btn:hover {
+      background: #27272a;
+      color: #fafafa;
+      border-color: #52525b;
     }
-    .td:last-child { border-right: none; }
-    .color-swatch { width: 14px; height: 14px; border-radius: 3px; border: 1px solid #3f3f46; margin-right: 10px; flex-shrink: 0; }
+
+    .table-body {
+      flex: 1;
+      overflow-y: auto;
+      display: none;
+    }
+
+    .table-row {
+      position: relative;
+      display: flex;
+      border-bottom: 1px solid #18181b;
+      transition: background 0.1s;
+    }
+
+    .table-row:hover {
+      background: #131316;
+    }
+
+    .td {
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #e4e4e7;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      border-right: 1px solid #27272a;
+    }
+
+    .td:last-child {
+      border-right: none;
+    }
+
+    .color-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      border: 1px solid #3f3f46;
+      margin-right: 10px;
+      flex-shrink: 0;
+    }
 
     /* INLINE EDIT ACTIONS */
     .row-actions {
-      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-      display: none; align-items: center; gap: 4px; background: #131316; 
-      padding: 4px; border-radius: 6px; box-shadow: -6px 0 10px rgba(9,9,11,0.8);
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: none;
+      align-items: center;
+      gap: 4px;
+      background: #131316;
+      padding: 4px;
+      border-radius: 6px;
+      box-shadow: -6px 0 10px rgba(9, 9, 11, 0.8);
     }
-    .table-row:hover .row-actions { display: flex; }
-    .table-row.is-editing .row-actions { display: flex; background: #18181b; }
-    
+
+    .table-row:hover .row-actions {
+      display: flex;
+    }
+
+    .table-row.is-editing .row-actions {
+      display: flex;
+      background: #18181b;
+    }
+
     .action-btn {
-      width: 22px; height: 22px; border-radius: 4px; background: transparent; border: 1px solid transparent;
-      color: #a1a1aa; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.15s;
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: #a1a1aa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.15s;
     }
-    .action-btn:hover { background: #27272a; color: #fafafa; }
-    .action-btn.confirm-btn { color: #10b981; }
-    .action-btn.confirm-btn:hover { background: rgba(16, 185, 129, 0.1); border-color: #10b981; }
-    .action-btn.cancel-btn { color: #ef4444; }
-    .action-btn.cancel-btn:hover { background: rgba(239, 68, 68, 0.1); border-color: #ef4444; }
+
+    .action-btn:hover {
+      background: #27272a;
+      color: #fafafa;
+    }
+
+    .action-btn.confirm-btn {
+      color: #10b981;
+    }
+
+    .action-btn.confirm-btn:hover {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: #10b981;
+    }
+
+    .action-btn.cancel-btn {
+      color: #ef4444;
+    }
+
+    .action-btn.cancel-btn:hover {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: #ef4444;
+    }
 
     .inline-edit-input {
-      width: 100%; background: #09090b; border: 1px solid #f97316; color: #fafafa;
-      padding: 6px 8px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 13px; outline: none;
+      width: 100%;
+      background: #09090b;
+      border: 1px solid #f97316;
+      color: #fafafa;
+      padding: 6px 8px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      outline: none;
     }
 
     /* ACCORDION/GROUPING STYLES */
-    .variable-group { display: flex; flex-direction: column; }
-    .group-header {
-      display: flex; align-items: center; padding: 10px 16px; background: #131316; border-bottom: 1px solid #18181b;
-      cursor: pointer; user-select: none; transition: background 0.15s;
+    .variable-group {
+      display: flex;
+      flex-direction: column;
     }
-    .group-header:hover { background: #18181b; }
-    .chevron { margin-right: 8px; color: #71717a; transition: transform 0.2s ease; }
-    .variable-group.collapsed .chevron { transform: rotate(-90deg); }
-    .variable-group.collapsed .group-items { display: none; }
-    .group-title { font-size: 13px; font-weight: 600; color: #fafafa; text-transform: capitalize; }
-    .group-items { display: flex; flex-direction: column; }
+
+    .group-header {
+      display: flex;
+      align-items: center;
+      padding: 10px 16px;
+      background: #131316;
+      border-bottom: 1px solid #18181b;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+
+    .group-header:hover {
+      background: #18181b;
+    }
+
+    .chevron {
+      margin-right: 8px;
+      color: #71717a;
+      transition: transform 0.2s ease;
+    }
+
+    .variable-group.collapsed .chevron {
+      transform: rotate(-90deg);
+    }
+
+    .variable-group.collapsed .group-items {
+      display: none;
+    }
+
+    .group-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fafafa;
+      text-transform: capitalize;
+    }
+
+    .group-items {
+      display: flex;
+      flex-direction: column;
+    }
 
     /* EMPTY STATE */
-    .empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-    .empty-icon-bg {
-      width: 80px; height: 72px; background: #131316; border-radius: 12px; border: 1px solid #27272a;
-      display: flex; flex-direction: column; gap: 10px; padding: 16px; margin-bottom: 20px;
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
     }
-    .empty-icon-line { height: 6px; background: #27272a; border-radius: 4px; }
-    .empty-title { font-size: 16px; font-weight: 500; color: #fafafa; margin-bottom: 6px; }
-    .empty-subtitle { font-size: 13px; color: #71717a; line-height: 1.5; }
+
+    .empty-icon-bg {
+      width: 80px;
+      height: 72px;
+      background: #131316;
+      border-radius: 12px;
+      border: 1px solid #27272a;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .empty-icon-line {
+      height: 6px;
+      background: #27272a;
+      border-radius: 4px;
+    }
+
+    .empty-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: #fafafa;
+      margin-bottom: 6px;
+    }
+
+    .empty-subtitle {
+      font-size: 13px;
+      color: #71717a;
+      line-height: 1.5;
+    }
 
     /* DIALOG BOX STYLES */
     .dialog-overlay {
-      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px);
-      display: none; align-items: center; justify-content: center; z-index: 1000;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
     }
+
     .dialog-box {
-      background: #131316; border: 1px solid #27272a; border-radius: 12px; padding: 24px;
-      width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 16px;
+      background: #131316;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      padding: 24px;
+      width: 400px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
-    .dialog-title { font-size: 16px; font-weight: 600; color: #fafafa; }
-    .dialog-text { font-size: 13px; color: #a1a1aa; line-height: 1.5; }
-    .dialog-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
-    .dialog-actions-row { display: flex; flex-direction: row; gap: 8px; justify-content: flex-end; margin-top: 8px; }
+
+    .dialog-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fafafa;
+    }
+
+    .dialog-text {
+      font-size: 13px;
+      color: #a1a1aa;
+      line-height: 1.5;
+    }
+
+    .dialog-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .dialog-actions-row {
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 8px;
+    }
 
     .dialog-btn {
-      width: 100%; height: 36px; border-radius: 6px; border: none; font-weight: 500; font-size: 13px;
-      cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s ease; font-family: 'Inter', sans-serif;
+      width: 100%;
+      height: 36px;
+      border-radius: 6px;
+      border: none;
+      font-weight: 500;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+      font-family: 'Inter', sans-serif;
     }
-    .btn-override { background: #ef4444; color: white; }
-    .btn-override:hover { background: #dc2626; }
-    .btn-update { background: #27272a; color: #fafafa; border: 1px solid #3f3f46; }
-    .btn-update:hover { background: #3f3f46; }
-    .btn-cancel { background: transparent; color: #a1a1aa; border: 1px solid transparent; }
-    .btn-cancel:hover { background: #18181b; color: #fafafa; }
+
+    .btn-override {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-override:hover {
+      background: #dc2626;
+    }
+
+    .btn-update {
+      background: #27272a;
+      color: #fafafa;
+      border: 1px solid #3f3f46;
+    }
+
+    .btn-update:hover {
+      background: #3f3f46;
+    }
+
+    .btn-cancel {
+      background: transparent;
+      color: #a1a1aa;
+      border: 1px solid transparent;
+    }
+
+    .btn-cancel:hover {
+      background: #18181b;
+      color: #fafafa;
+    }
 
     .diff-checkbox {
-      appearance: none; width: 16px; height: 16px; border: 1px solid #3f3f46; border-radius: 4px;
-      background: #18181b; cursor: pointer; position: relative; margin-top: 2px;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 1px solid #3f3f46;
+      border-radius: 4px;
+      background: #18181b;
+      cursor: pointer;
+      position: relative;
+      margin-top: 2px;
     }
-    .diff-checkbox:checked { background: #f97316; border-color: #f97316; }
+
+    .diff-checkbox:checked {
+      background: #f97316;
+      border-color: #f97316;
+    }
+
     .diff-checkbox:checked::after {
-      content: '✓'; position: absolute; color: white; font-size: 10px; font-weight: bold;
-      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      content: '✓';
+      position: absolute;
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
 
-    .split-inputs { display: flex; gap: 8px; width: 100%; }
+    .split-inputs {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+    }
+
     .split-inputs input {
-      flex: 1; background: #09090b; border: 1px solid #3f3f46; color: #fafafa;
-      padding: 8px 10px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 13px; outline: none;
+      flex: 1;
+      background: #09090b;
+      border: 1px solid #3f3f46;
+      color: #fafafa;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      outline: none;
     }
-    .split-inputs input:focus { border-color: #f97316; }
 
+    .split-inputs input:focus {
+      border-color: #f97316;
+    }
   </style>
 </head>
 
 <body>
-<div class="plugin-window">
-  
-  <!-- EXISTING VARIABLES DIALOG -->
-  <div class="dialog-overlay" id="overrideDialog">
-    <div class="dialog-box">
-      <div class="dialog-title">Variable Changes Detected</div>
-      <div class="dialog-text">Some variables have new values or are completely new. How would you like to proceed?</div>
-      <div class="dialog-actions">
-        <button class="dialog-btn btn-update" id="btnUpdateOnly">Sync Only New Variables</button>
-        <button class="dialog-btn btn-override" id="btnReviewOverrides" style="background:#f97316;">Review & Sync Changes</button>
-        <button class="dialog-btn btn-cancel" id="btnCancelDialog">Cancel</button>
-      </div>
-    </div>
-  </div>
+  <div class="plugin-window">
 
-  <!-- ADD NEW VARIABLE DIALOG -->
-  <div class="dialog-overlay" id="addVarDialog">
-    <div class="dialog-box" style="width: 450px;">
-      <div class="dialog-title">Create Variable</div>
-      <div class="dialog-text">Add a new key-value pair to your JSON payload. Use slashes (/) in the name to create groups.</div>
-      <div class="split-inputs">
-        <input type="text" id="newVarName" placeholder="e.g. colors/primary/brand" />
-        <input type="text" id="newVarValue" placeholder='e.g. "#FF0000" or 16' />
-      </div>
-      <div class="dialog-actions-row">
-        <button class="dialog-btn btn-cancel" id="btnCancelAddVar" style="width: auto; padding: 0 16px;">Cancel</button>
-        <button class="dialog-btn btn-update" id="btnConfirmAddVar" style="width: auto; padding: 0 16px; background: #f97316; color: white; border-color: #f97316;">Create</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- INLINE EDIT CONFIRM DIALOG -->
-  <div class="dialog-overlay" id="editConfirmDialog">
-    <div class="dialog-box">
-      <div class="dialog-title">Confirm Update</div>
-      <div class="dialog-text">Are you sure you want to update this variable? The JSON payload will be updated.</div>
-      <div class="dialog-actions-row">
-        <button class="dialog-btn btn-cancel" id="btnCancelInlineEdit" style="width: auto; padding: 0 16px;">Cancel</button>
-        <button class="dialog-btn btn-update" id="btnConfirmInlineEdit" style="width: auto; padding: 0 16px; background: #10b981; color: white; border-color: #10b981;">Update</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- INLINE DELETE CONFIRM DIALOG -->
-  <div class="dialog-overlay" id="deleteConfirmDialog">
-    <div class="dialog-box">
-      <div class="dialog-title">Confirm Deletion</div>
-      <div class="dialog-text">Are you sure you want to delete this variable? This removes it from the JSON payload.</div>
-      <div class="dialog-actions-row">
-        <button class="dialog-btn btn-cancel" id="btnCancelInlineDelete" style="width: auto; padding: 0 16px;">Cancel</button>
-        <button class="dialog-btn btn-override" id="btnConfirmInlineDelete" style="width: auto; padding: 0 16px;">Delete</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- DIFF REVIEW DIALOG -->
-  <div class="dialog-overlay" id="reviewDialog">
-    <div class="dialog-box" style="width: 550px; max-height: 85vh; padding: 20px;">
-      <div class="dialog-title">Review Sync Changes</div>
-      <div class="dialog-text">Select the updates you want to push to Figma. Unchanged variables are filtered out.</div>
-      <div class="diff-list" id="diffList" style="overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 4px; margin: 8px 0; border: 1px solid #27272a; border-radius: 8px; padding: 4px; background: #09090b; max-height: 350px;"></div>
-      <div class="dialog-actions-row">
-        <button class="dialog-btn btn-cancel" id="btnCancelReview" style="width: auto; padding: 0 16px;">Cancel</button>
-        <button class="dialog-btn btn-update" id="btnConfirmReview" style="width: auto; padding: 0 16px; background: #fafafa; color: #09090b;">Confirm Selected Sync</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- EXPORT CODE DIALOG -->
-  <div class="dialog-overlay" id="exportDialog">
-    <div class="dialog-box" style="width: 650px; max-height: 85vh;">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <div class="dialog-title" id="exportTitle">Export Code</div>
-        <div style="display: flex; gap: 8px;">
-          <button class="add-var-btn" id="btnCopyExport">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copy
-          </button>
-          <button class="add-var-btn" id="btnDownloadExport" style="background: #f97316; color: white; border-color: #f97316;">
-             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> Download
-          </button>
-          <button class="add-var-btn" id="btnCloseExport" style="border: none;">✕</button>
+    <!-- EXISTING VARIABLES DIALOG -->
+    <div class="dialog-overlay" id="overrideDialog">
+      <div class="dialog-box">
+        <div class="dialog-title">Variable Changes Detected</div>
+        <div class="dialog-text">Some variables have new values or are completely new. How would you like to proceed?
         </div>
-      </div>
-      <textarea id="exportTextArea" readonly style="width: 100%; height: 350px; background: #000; color: #a1a1aa; font-family: 'JetBrains Mono', monospace; font-size: 12px; padding: 12px; border: 1px solid #27272a; border-radius: 6px; resize: none;"></textarea>
-    </div>
-  </div>
-
-  <div class="main-layout">
-    
-    <!-- LEFT PANEL -->
-    <div class="left-panel">
-      <div class="app">
-        <div class="header">
-          <div class="logo">⚡</div>
-          <div class="header-text">
-            <div class="brand">TokenShift</div>
-            <div class="subtitle">JSON to Figma Variables</div>
-          </div>
-        </div>
-
-        <div class="section-label-row">
-          <div class="section-label">Source JSON</div>
-          <button class="choose-file-btn" onclick="event.preventDefault(); document.getElementById('fileInput').click()">Upload File</button>
-        </div>
-        <input type="file" id="fileInput" accept=".json" />
-
-        <div class="editor-wrap" id="editorWrap">
-          <div class="editor-lines">
-            <div class="line-numbers" id="lineNumbers"></div>
-            <textarea id="jsonInput" spellcheck="false" placeholder='{\n  "colors": {\n    "primary": "#ffffff"\n  }\n}'></textarea>
-          </div>
-          <div class="editor-footer">
-            <span>JSON Payload</span>
-            <span id="charCount">0 characters</span>
-          </div>
-        </div>
-
-        <button id="importLeftBtn" class="convert-btn">Generate Variables</button>
-
-        <div class="footer">
-          <div class="footer-left">Your Data stay local. Nothing is sent anywhere.</div>
-          <div class="footer-right">v1.0.0</div>
+        <div class="dialog-actions">
+          <button class="dialog-btn btn-update" id="btnUpdateOnly">Sync Only New Variables</button>
+          <button class="dialog-btn btn-override" id="btnReviewOverrides" style="background:#f97316;">Review & Sync
+            Changes</button>
+          <button class="dialog-btn btn-cancel" id="btnCancelDialog">Cancel</button>
         </div>
       </div>
     </div>
 
-    <!-- RIGHT PANEL -->
-    <div class="right-panel">
-      <div style="display: flex; height: 100%; min-height: 0;">
-        
-        <div class="collections-sidebar">
-          <div class="sidebar-header-row">
-            <span>Variable Lists</span>
-            
-            <!-- Export Dropdown -->
-            <div>
-              <button class="add-var-btn" id="btnExportMenu" title="Export Formats">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-              </button>
-              <div id="exportDropdown" class="export-dropdown">
-                <div class="dropdown-item" data-format="css">CSS Variables</div>
-                <div class="dropdown-item" data-format="react">React / JS Object</div>
-                <div class="dropdown-item" data-format="flutter">Flutter (Dart)</div>
-                <div class="dropdown-item" data-format="swift">Swift (iOS)</div>
-                <div class="dropdown-item" data-format="json">Raw JSON</div>
-              </div>
-            </div>
+    <!-- ADD NEW VARIABLE DIALOG -->
+    <div class="dialog-overlay" id="addVarDialog">
+      <div class="dialog-box" style="width: 450px;">
+        <div class="dialog-title">Create Variable</div>
+        <div class="dialog-text">Add a new key-value pair to your JSON payload. Use slashes (/) in the name to create
+          groups.</div>
+        <div class="split-inputs">
+          <input type="text" id="newVarName" placeholder="e.g. colors/primary/brand" />
+          <input type="text" id="newVarValue" placeholder='e.g. "#FF0000" or 16' />
+        </div>
+        <div class="dialog-actions-row">
+          <button class="dialog-btn btn-cancel" id="btnCancelAddVar"
+            style="width: auto; padding: 0 16px;">Cancel</button>
+          <button class="dialog-btn btn-update" id="btnConfirmAddVar"
+            style="width: auto; padding: 0 16px; background: #f97316; color: white; border-color: #f97316;">Create</button>
+        </div>
+      </div>
+    </div>
 
-          </div>
-          <div class="collections-list" id="collectionFilters">
-            <div class="collection-item active" data-type="All"><span>All Types</span><span class="count" id="count-All">0</span></div>
-            <div class="collection-item" data-type="Color"><span>Color</span><span class="count" id="count-Color">0</span></div>
-            <div class="collection-item" data-type="Number"><span>Number</span><span class="count" id="count-Number">0</span></div>
-            <div class="collection-item" data-type="String"><span>String</span><span class="count" id="count-String">0</span></div>
-            <div class="collection-item" data-type="Boolean"><span>Boolean</span><span class="count" id="count-Boolean">0</span></div>
-          </div>
-          
-          <div class="sidebar-footer">
-            <button class="convert-btn" id="importRightBtn">Sync to Figma</button>
-            <!-- Import from Figma Button -->
-            <button class="convert-btn" id="btnImportFromFigma" style="background: transparent; border: 1px solid #3f3f46; color: #a1a1aa; margin-top: 8px;">
-               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg> 
-               Import from Figma
+    <!-- INLINE EDIT CONFIRM DIALOG -->
+    <div class="dialog-overlay" id="editConfirmDialog">
+      <div class="dialog-box">
+        <div class="dialog-title">Confirm Update</div>
+        <div class="dialog-text">Are you sure you want to update this variable? The JSON payload will be updated.</div>
+        <div class="dialog-actions-row">
+          <button class="dialog-btn btn-cancel" id="btnCancelInlineEdit"
+            style="width: auto; padding: 0 16px;">Cancel</button>
+          <button class="dialog-btn btn-update" id="btnConfirmInlineEdit"
+            style="width: auto; padding: 0 16px; background: #10b981; color: white; border-color: #10b981;">Update</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- INLINE DELETE CONFIRM DIALOG -->
+    <div class="dialog-overlay" id="deleteConfirmDialog">
+      <div class="dialog-box">
+        <div class="dialog-title">Confirm Deletion</div>
+        <div class="dialog-text">Are you sure you want to delete this variable? This removes it from the JSON payload.
+        </div>
+        <div class="dialog-actions-row">
+          <button class="dialog-btn btn-cancel" id="btnCancelInlineDelete"
+            style="width: auto; padding: 0 16px;">Cancel</button>
+          <button class="dialog-btn btn-override" id="btnConfirmInlineDelete"
+            style="width: auto; padding: 0 16px;">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIFF REVIEW DIALOG -->
+    <div class="dialog-overlay" id="reviewDialog">
+      <div class="dialog-box" style="width: 550px; max-height: 85vh; padding: 20px;">
+        <div class="dialog-title">Review Sync Changes</div>
+        <div class="dialog-text">Select the updates you want to push to Figma. Unchanged variables are filtered out.
+        </div>
+        <div class="diff-list" id="diffList"
+          style="overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 4px; margin: 8px 0; border: 1px solid #27272a; border-radius: 8px; padding: 4px; background: #09090b; max-height: 350px;">
+        </div>
+        <div class="dialog-actions-row">
+          <button class="dialog-btn btn-cancel" id="btnCancelReview"
+            style="width: auto; padding: 0 16px;">Cancel</button>
+          <button class="dialog-btn btn-update" id="btnConfirmReview"
+            style="width: auto; padding: 0 16px; background: #fafafa; color: #09090b;">Confirm Selected Sync</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPORT CODE DIALOG -->
+    <div class="dialog-overlay" id="exportDialog">
+      <div class="dialog-box" style="width: 650px; max-height: 85vh;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div class="dialog-title" id="exportTitle">Export Code</div>
+          <div style="display: flex; gap: 8px;">
+            <button class="add-var-btn" id="btnCopyExport">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg> Copy
             </button>
+            <button class="add-var-btn" id="btnDownloadExport"
+              style="background: #f97316; color: white; border-color: #f97316;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg> Download
+            </button>
+            <button class="add-var-btn" id="btnCloseExport" style="border: none;">✕</button>
           </div>
         </div>
-
-        <div class="table-view">
-          <div class="table-header">
-            <div class="th" style="flex: 1.5;">Names</div>
-            <div class="th" style="flex: 1.5;">
-              Variable Value
-              <button class="add-var-btn" id="btnOpenAddVar">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Add
-              </button>
-            </div>
-          </div>
-          <div class="table-body" id="tableBody"></div>
-          <div class="empty-state" id="emptyState">
-            <div class="empty-icon-bg">
-              <div class="empty-icon-line" style="width: 80%;"></div>
-              <div class="empty-icon-line" style="width: 100%; display: flex; gap: 8px; background: transparent;">
-                <div class="empty-icon-line" style="width: 20%;"></div><div class="empty-icon-line" style="width: 60%;"></div>
-              </div>
-              <div class="empty-icon-line" style="width: 60%; display: flex; gap: 8px; background: transparent;">
-                <div class="empty-icon-line" style="width: 30%;"></div><div class="empty-icon-line" style="width: 60%;"></div>
-              </div>
-            </div>
-            <h3 class="empty-title">Awaiting Input</h3>
-            <p class="empty-subtitle">Paste or upload valid JSON, then click<br>Generate Variables to preview.</p>
-          </div>
-        </div>
-
+        <textarea id="exportTextArea" readonly
+          style="width: 100%; height: 350px; background: #000; color: #a1a1aa; font-family: 'JetBrains Mono', monospace; font-size: 12px; padding: 12px; border: 1px solid #27272a; border-radius: 6px; resize: none;"></textarea>
       </div>
     </div>
 
+    <div class="main-layout">
+
+      <!-- LEFT PANEL -->
+      <div class="left-panel">
+        <div class="app">
+          <div class="header">
+            <div class="logo">
+              <svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M48.6356 6.02504C49.8521 6.02278 51.0687 6.01951 52.2852 6.01531C54.8254 6.01038 57.3653 6.01748 59.9055 6.03324C63.146 6.05237 66.3856 6.04134 69.6261 6.02124C72.1354 6.00905 74.6445 6.013 77.1538 6.02167C78.3479 6.0239 79.542 6.02122 80.7361 6.01335C93.9269 5.94545 93.9269 5.94545 99.5352 11.0214C102.484 14.0295 104.434 17.6476 106.403 21.3369C107.086 22.5866 107.77 23.8356 108.456 25.084C108.8 25.714 109.144 26.344 109.499 26.9931C111.09 29.8693 112.748 32.7044 114.413 35.5383C114.73 36.0801 115.046 36.6219 115.372 37.1802C116.939 39.8616 118.513 42.5391 120.095 45.2113C120.873 46.5275 121.647 47.8463 122.419 49.1657C122.967 50.0983 123.521 51.0273 124.076 51.9562C127.016 56.9868 128.82 61.7141 127.628 67.5953C126.493 71.662 124.584 75.0593 122.423 78.6669C121.857 79.6299 121.29 80.593 120.724 81.5563C120.14 82.5499 119.553 83.542 118.966 84.534C117.495 87.0236 116.054 89.5304 114.614 92.0377C113.575 93.8441 112.532 95.6474 111.488 97.4504C110.076 99.8906 108.683 102.34 107.299 104.796C106.616 105.997 105.932 107.198 105.248 108.399C104.945 108.946 104.641 109.493 104.328 110.056C101.338 115.277 97.9331 119.335 92.0615 121.201C89.5251 121.846 87.0197 121.847 84.4195 121.851C83.9377 121.854 83.4559 121.856 82.9595 121.859C81.3691 121.867 79.7786 121.871 78.1881 121.874C77.0776 121.877 75.9671 121.881 74.8565 121.884C72.5278 121.89 70.199 121.893 67.8703 121.895C64.899 121.898 61.9279 121.911 58.9567 121.927C56.6616 121.938 54.3665 121.941 52.0714 121.942C50.9768 121.943 49.8822 121.948 48.7876 121.955C34.3728 122.046 34.3728 122.046 28.8442 117.31C25.24 113.698 22.9489 109.163 20.5221 104.726C18.5563 101.134 16.5146 97.5906 14.444 94.0575C13.7794 92.9214 13.1148 91.7853 12.4502 90.6493C12.1104 90.0686 11.7706 89.4879 11.4205 88.8897C9.53164 85.6599 7.64754 82.4275 5.76929 79.1916C5.41348 78.5827 5.05768 77.9738 4.6911 77.3465C-0.0209121 69.2144 -0.0209119 69.2144 0.0327925 64.1857C0.0219709 63.4484 0.0111494 62.7111 0 61.9515C0.347587 56.9585 3.6809 52.3732 6.08409 48.1306C6.4275 47.521 6.7709 46.9114 7.12471 46.2834C10.1041 41.0114 13.1425 35.7747 16.2104 30.5538C17.5891 28.2067 18.9509 25.8507 20.3029 23.4881C20.6514 22.8822 20.9998 22.2762 21.3588 21.6519C22.0222 20.4975 22.6827 19.3414 23.3395 18.1833C29.6543 7.23495 36.5755 5.94554 48.6356 6.02504Z"
+                  fill="#262629" />
+                <path
+                  d="M68.7194 30C69.1975 30.0589 69.1975 30.0589 69.466 30.3196C69.8327 31.4456 69.2938 32.9975 69.0917 34.1574C69.0531 34.3808 69.0145 34.6043 68.9759 34.8277C68.8714 35.4326 68.7664 36.0374 68.6614 36.6423C68.5507 37.2796 68.4405 37.917 68.3302 38.5545C68.1445 39.6274 67.9585 40.7003 67.7724 41.7732C67.5354 43.1386 67.2989 44.5042 67.0625 45.8697C66.8574 47.0548 66.6521 48.2398 66.4468 49.4249C66.4032 49.6763 66.3596 49.9278 66.3161 50.1793C65.8071 53.1174 65.2952 56.055 64.7683 58.99C65.5715 59.0885 66.3603 59.1481 67.169 59.1624C67.2816 59.1648 67.3942 59.1672 67.5103 59.1697C67.8797 59.1776 68.2492 59.1847 68.6187 59.1918C68.8798 59.1973 69.1408 59.2028 69.4019 59.2084C70.089 59.2229 70.7762 59.2369 71.4633 59.2507C73.3203 59.288 75.1772 59.3263 77.034 59.3703C77.5704 59.3829 78.1068 59.395 78.6432 59.404C79.1243 59.4123 79.6052 59.4235 80.0861 59.4357C80.218 59.4371 80.3499 59.4385 80.4858 59.4399C81.3262 59.4659 81.3262 59.4659 81.7578 59.7809C82.0349 60.196 82.0364 60.378 81.9485 60.8738C81.7343 61.333 81.4697 61.7565 81.2019 62.1858C81.0405 62.4517 80.8794 62.7177 80.7184 62.9838C80.6338 63.1228 80.5492 63.2619 80.4619 63.4052C80.032 64.1193 79.6191 64.8431 79.2053 65.5667C78.3241 67.1023 77.4355 68.6335 76.5439 70.163C76.1528 70.8342 75.7623 71.5057 75.3717 72.1772C74.9037 72.9815 74.4357 73.7859 73.9671 74.5898C73.1614 75.9726 72.3595 77.3574 71.5632 78.7455C70.8762 79.9427 70.1792 81.1332 69.4744 82.3199C68.6964 83.6299 67.9354 84.9484 67.1843 86.274C66.4391 87.5882 65.6749 88.8901 64.9028 90.1886C64.261 91.2705 63.6349 92.3604 63.015 93.455C62.2986 94.7192 61.5703 95.9751 60.8255 97.2227C60.7401 97.3664 60.6546 97.51 60.5665 97.658C60.4876 97.7895 60.4087 97.921 60.3275 98.0564C60.2582 98.1719 60.1889 98.2875 60.1175 98.4065C59.9363 98.6861 59.9363 98.6861 59.6679 98.9552C58.8358 99.0311 58.8358 99.0311 58.4957 98.7911C58.2652 98.4664 58.2993 98.2982 58.3479 97.9057C58.3639 97.7733 58.38 97.6408 58.3965 97.5043C58.5113 96.7204 58.6396 95.9397 58.7763 95.1593C58.8088 94.9714 58.8413 94.7835 58.8736 94.5955C58.9614 94.0874 59.0498 93.5794 59.1384 93.0714C59.2325 92.5313 59.3259 91.991 59.4194 91.4508C59.5774 90.5381 59.7359 89.6255 59.8946 88.7129C60.114 87.4521 60.3326 86.1912 60.5511 84.9302C61.4121 79.9601 62.2793 74.9912 63.1576 70.0241C62.3551 69.9258 61.567 69.866 60.759 69.8517C60.6466 69.8493 60.5342 69.8469 60.4184 69.8444C60.0496 69.8365 59.6807 69.8294 59.3119 69.8223C59.0511 69.8168 58.7904 69.8113 58.5297 69.8057C57.8432 69.7912 57.1568 69.7772 56.4704 69.7634C55.7841 69.7496 55.0978 69.7356 54.4115 69.7214C54.2112 69.7172 54.2112 69.7172 54.0068 69.713C52.9718 69.6915 51.9369 69.6683 50.902 69.6439C50.2636 69.6289 49.6252 69.6159 48.9867 69.6057C48.579 69.5986 48.1714 69.5883 47.7637 69.5784C47.6244 69.577 47.485 69.5756 47.3414 69.5742C47.2173 69.5706 47.0933 69.5669 46.9654 69.5632C46.8607 69.5612 46.7559 69.5592 46.648 69.5572C46.3801 69.4859 46.3801 69.4859 46.1386 69.2379C45.9774 68.9476 45.9774 68.9476 46.0351 68.5329C46.2802 67.8296 46.6863 67.2027 47.068 66.5676C47.2391 66.2784 47.41 65.9891 47.5807 65.6997C47.67 65.5488 47.7594 65.3978 47.8514 65.2422C48.2634 64.5428 48.6632 63.8365 49.0636 63.1305C49.8474 61.7485 50.6404 60.3723 51.4417 59.0005C52.0431 57.9692 52.6354 56.9329 53.2253 55.895C53.9652 54.5931 54.713 53.2962 55.4683 52.0032C56.0697 50.9719 56.662 49.9356 57.2519 48.8977C57.9168 47.7278 58.5866 46.561 59.2652 45.3991C59.9406 44.2425 60.6079 43.0815 61.2701 41.9173C62.9119 39.0314 64.57 36.1552 66.2447 33.2884C66.3262 33.1485 66.4078 33.0087 66.4918 32.8646C66.7333 32.4505 66.9755 32.0368 67.2178 31.6232C67.2915 31.4967 67.3652 31.3702 67.4412 31.2398C67.5093 31.1238 67.5775 31.0078 67.6477 30.8883C67.7074 30.7863 67.7672 30.6842 67.8287 30.5791C68.1041 30.1492 68.1977 30.0666 68.7194 30Z"
+                  fill="url(#paint0_linear_2630_1765)" />
+                <defs>
+                  <linearGradient id="paint0_linear_2630_1765" x1="64" y1="30" x2="64" y2="99"
+                    gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#F9AA54" />
+                    <stop offset="1" stop-color="#F04F4D" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <div class="header-text">
+              <div class="brand">TokenShift</div>
+              <div class="subtitle">JSON to Figma Variables</div>
+            </div>
+          </div>
+
+          <div class="section-label-row">
+            <div class="section-label">Source JSON</div>
+            <button class="choose-file-btn"
+              onclick="event.preventDefault(); document.getElementById('fileInput').click()">Upload File</button>
+          </div>
+          <input type="file" id="fileInput" accept=".json" />
+
+          <div class="editor-wrap" id="editorWrap">
+            <div class="editor-lines">
+              <div class="line-numbers" id="lineNumbers"></div>
+              <textarea id="jsonInput" spellcheck="false"
+                placeholder='{\n  "colors": {\n    "primary": "#ffffff"\n  }\n}'></textarea>
+            </div>
+            <div class="editor-footer">
+              <span>JSON Payload</span>
+              <span id="charCount">0 characters</span>
+            </div>
+          </div>
+
+          <button id="importLeftBtn" class="convert-btn">Generate Variables</button>
+
+          <div class="footer">
+            <div class="footer-left">Your Data stay local. Nothing is sent anywhere.</div>
+            <div class="footer-right">v1.0.0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL -->
+      <div class="right-panel">
+        <div style="display: flex; height: 100%; min-height: 0;">
+
+          <div class="collections-sidebar">
+            <div class="sidebar-header-row">
+              <span>Variable Lists</span>
+
+              <!-- Export Dropdown -->
+              <div>
+                <button class="add-var-btn" id="btnExportMenu" title="Export Formats">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                </button>
+                <div id="exportDropdown" class="export-dropdown">
+                  <div class="dropdown-item" data-format="css">CSS Variables</div>
+                  <div class="dropdown-item" data-format="react">React / JS Object</div>
+                  <div class="dropdown-item" data-format="flutter">Flutter (Dart)</div>
+                  <div class="dropdown-item" data-format="swift">Swift (iOS)</div>
+                  <div class="dropdown-item" data-format="json">Raw JSON</div>
+                </div>
+              </div>
+
+            </div>
+            <div class="collections-list" id="collectionFilters">
+              <div class="collection-item active" data-type="All"><span>All Types</span><span class="count"
+                  id="count-All">0</span></div>
+              <div class="collection-item" data-type="Color"><span>Color</span><span class="count"
+                  id="count-Color">0</span></div>
+              <div class="collection-item" data-type="Number"><span>Number</span><span class="count"
+                  id="count-Number">0</span></div>
+              <div class="collection-item" data-type="String"><span>String</span><span class="count"
+                  id="count-String">0</span></div>
+              <div class="collection-item" data-type="Boolean"><span>Boolean</span><span class="count"
+                  id="count-Boolean">0</span></div>
+            </div>
+
+            <div class="sidebar-footer">
+              <button class="convert-btn" id="importRightBtn">Sync to Figma</button>
+              <!-- Import from Figma Button -->
+              <button class="convert-btn" id="btnImportFromFigma"
+                style="background: transparent; border: 1px solid #3f3f46; color: #a1a1aa; margin-top: 8px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                Import from Figma
+              </button>
+            </div>
+          </div>
+
+          <div class="table-view">
+            <div class="table-header">
+              <div class="th" style="flex: 1.5;">Names</div>
+              <div class="th" style="flex: 1.5;">
+                Variable Value
+                <button class="add-var-btn" id="btnOpenAddVar">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg> Add
+                </button>
+              </div>
+            </div>
+            <div class="table-body" id="tableBody"></div>
+            <div class="empty-state" id="emptyState">
+              <div class="empty-icon-bg">
+                <div class="empty-icon-line" style="width: 80%;"></div>
+                <div class="empty-icon-line" style="width: 100%; display: flex; gap: 8px; background: transparent;">
+                  <div class="empty-icon-line" style="width: 20%;"></div>
+                  <div class="empty-icon-line" style="width: 60%;"></div>
+                </div>
+                <div class="empty-icon-line" style="width: 60%; display: flex; gap: 8px; background: transparent;">
+                  <div class="empty-icon-line" style="width: 30%;"></div>
+                  <div class="empty-icon-line" style="width: 60%;"></div>
+                </div>
+              </div>
+              <h3 class="empty-title">Awaiting Input</h3>
+              <p class="empty-subtitle">Paste or upload valid JSON, then click<br>Generate Variables to preview.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
   </div>
-</div>
 
-<script>
-  const input = document.getElementById("jsonInput");
-  const fileInput = document.getElementById("fileInput");
-  const importLeftBtn = document.getElementById("importLeftBtn");
-  const importRightBtn = document.getElementById("importRightBtn");
-  const btnImportFromFigma = document.getElementById("btnImportFromFigma");
-  const charCount = document.getElementById("charCount");
-  const lineNumbers = document.getElementById("lineNumbers");
-  const editorWrap = document.getElementById("editorWrap");
-  const tableBody = document.getElementById("tableBody");
-  const emptyState = document.getElementById("emptyState");
-  
-  const overrideDialog = document.getElementById("overrideDialog");
-  const reviewDialog = document.getElementById("reviewDialog");
-  const diffList = document.getElementById("diffList");
-  
-  // Export Elements
-  const btnExportMenu = document.getElementById("btnExportMenu");
-  const exportDropdown = document.getElementById("exportDropdown");
-  const exportDialog = document.getElementById("exportDialog");
-  const exportTextArea = document.getElementById("exportTextArea");
-  const exportTitle = document.getElementById("exportTitle");
-  let currentExportFormat = '';
-  
-  let pendingOldPath = null;
-  let pendingNewPath = null;
-  let pendingNewValue = null;
-  let pendingDeletePath = null;
+  <script>
+    const input = document.getElementById("jsonInput");
+    const fileInput = document.getElementById("fileInput");
+    const importLeftBtn = document.getElementById("importLeftBtn");
+    const importRightBtn = document.getElementById("importRightBtn");
+    const btnImportFromFigma = document.getElementById("btnImportFromFigma");
+    const charCount = document.getElementById("charCount");
+    const lineNumbers = document.getElementById("lineNumbers");
+    const editorWrap = document.getElementById("editorWrap");
+    const tableBody = document.getElementById("tableBody");
+    const emptyState = document.getElementById("emptyState");
 
-  let parsedVariables = [];
-  let currentFilter = "All";
-  let currentDiffData = []; 
+    const overrideDialog = document.getElementById("overrideDialog");
+    const reviewDialog = document.getElementById("reviewDialog");
+    const diffList = document.getElementById("diffList");
 
-  function flatten(obj, parent = "", res = {}) {
-    for (let key in obj) {
-      const propName = parent ? `${parent}/${key}` : key;
-      if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {
-        flatten(obj[key], propName, res);
-      } else {
-        res[propName] = obj[key];
-      }
-    }
-    return res;
-  }
+    // Export Elements
+    const btnExportMenu = document.getElementById("btnExportMenu");
+    const exportDropdown = document.getElementById("exportDropdown");
+    const exportDialog = document.getElementById("exportDialog");
+    const exportTextArea = document.getElementById("exportTextArea");
+    const exportTitle = document.getElementById("exportTitle");
+    let currentExportFormat = '';
 
-  function detectType(value) {
-    if (typeof value === "number") return "Number";
-    if (typeof value === "boolean") return "Boolean";
-    if (typeof value === "string") {
-      if (/^#([0-9A-F]{3}){1,2}$/i.test(value) || /^rgba?\(/i.test(value)) return "Color";
-      return "String";
-    }
-    return null;
-  }
+    let pendingOldPath = null;
+    let pendingNewPath = null;
+    let pendingNewValue = null;
+    let pendingDeletePath = null;
 
-  function updatePreview() {
-    try {
-      const jsonStr = input.value.trim();
-      if (!jsonStr) throw new Error("Empty");
-      
-      const parsed = JSON.parse(jsonStr);
-      const flat = flatten(parsed);
-      
-      parsedVariables = [];
-      for (const key in flat) {
-        const type = detectType(flat[key]);
-        if (type) {
-          parsedVariables.push({ name: key, value: flat[key], type });
+    let parsedVariables = [];
+    let currentFilter = "All";
+    let currentDiffData = [];
+
+    function flatten(obj, parent = "", res = {}) {
+      for (let key in obj) {
+        const propName = parent ? `${parent}/${key}` : key;
+        if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {
+          flatten(obj[key], propName, res);
+        } else {
+          res[propName] = obj[key];
         }
       }
-    } catch (e) {
-      parsedVariables = []; 
+      return res;
     }
-    renderTable();
-  }
 
-  function createRowHTML(displayName, valueHTML, isGrouped = false, fullPath = "", rawValue = "") {
-    const paddingLeft = isGrouped ? '32px' : '16px';
-    const escapedVal = String(rawValue).replace(/"/g, '&quot;'); 
-    const displayPath = isGrouped ? fullPath : displayName;
+    function detectType(value) {
+      if (typeof value === "number") return "Number";
+      if (typeof value === "boolean") return "Boolean";
+      if (typeof value === "string") {
+        if (/^#([0-9A-F]{3}){1,2}$/i.test(value) || /^rgba?\(/i.test(value)) return "Color";
+        return "String";
+      }
+      return null;
+    }
 
-    return `
+    function updatePreview() {
+      try {
+        const jsonStr = input.value.trim();
+        if (!jsonStr) throw new Error("Empty");
+
+        const parsed = JSON.parse(jsonStr);
+        const flat = flatten(parsed);
+
+        parsedVariables = [];
+        for (const key in flat) {
+          const type = detectType(flat[key]);
+          if (type) {
+            parsedVariables.push({ name: key, value: flat[key], type });
+          }
+        }
+      } catch (e) {
+        parsedVariables = [];
+      }
+      renderTable();
+    }
+
+    function createRowHTML(displayName, valueHTML, isGrouped = false, fullPath = "", rawValue = "") {
+      const paddingLeft = isGrouped ? '32px' : '16px';
+      const escapedVal = String(rawValue).replace(/"/g, '&quot;');
+      const displayPath = isGrouped ? fullPath : displayName;
+
+      return `
       <div class="table-row">
         <div class="td name-cell" style="flex: 1.5; word-break: break-all; color: #a1a1aa; padding-left: ${paddingLeft};">${displayName}</div>
         <div class="td val-cell" style="flex: 1.5; word-break: break-all; font-weight: 500;">${valueHTML}</div>
@@ -526,49 +1163,49 @@
         </div>
       </div>
     `;
-  }
+    }
 
-  function renderTable() {
-    document.getElementById("count-All").textContent = parsedVariables.length;
-    document.getElementById("count-Color").textContent = parsedVariables.filter(v => v.type === "Color").length;
-    document.getElementById("count-Number").textContent = parsedVariables.filter(v => v.type === "Number").length;
-    document.getElementById("count-String").textContent = parsedVariables.filter(v => v.type === "String").length;
-    document.getElementById("count-Boolean").textContent = parsedVariables.filter(v => v.type === "Boolean").length;
+    function renderTable() {
+      document.getElementById("count-All").textContent = parsedVariables.length;
+      document.getElementById("count-Color").textContent = parsedVariables.filter(v => v.type === "Color").length;
+      document.getElementById("count-Number").textContent = parsedVariables.filter(v => v.type === "Number").length;
+      document.getElementById("count-String").textContent = parsedVariables.filter(v => v.type === "String").length;
+      document.getElementById("count-Boolean").textContent = parsedVariables.filter(v => v.type === "Boolean").length;
 
-    const filteredVars = currentFilter === "All" 
-      ? parsedVariables 
-      : parsedVariables.filter(v => v.type === currentFilter);
+      const filteredVars = currentFilter === "All"
+        ? parsedVariables
+        : parsedVariables.filter(v => v.type === currentFilter);
 
-    if (filteredVars.length === 0) {
-      tableBody.style.display = "none";
-      emptyState.style.display = "flex";
-      tableBody.innerHTML = "";
-    } else {
-      tableBody.style.display = "block";
-      emptyState.style.display = "none";
-      
-      if (currentFilter === "All") {
-        tableBody.innerHTML = filteredVars.map(v => {
-          let valueHTML = String(v.value);
-          if (v.type === "Color") valueHTML = `<div class="color-swatch" style="background-color: ${v.value}"></div><span>${v.value}</span>`;
-          return createRowHTML(v.name, valueHTML, false, v.name, v.value);
-        }).join('');
+      if (filteredVars.length === 0) {
+        tableBody.style.display = "none";
+        emptyState.style.display = "flex";
+        tableBody.innerHTML = "";
       } else {
-        const groups = {};
-        filteredVars.forEach(v => {
-          const parts = v.name.split('/');
-          let groupName = "Base", itemName = v.name;
-          if (parts.length >= 3) { groupName = parts[1]; itemName = parts.slice(2).join('/'); }
-          else if (parts.length === 2) { groupName = "Base"; itemName = parts[1]; }
-          else { groupName = "Base"; itemName = parts[0]; }
+        tableBody.style.display = "block";
+        emptyState.style.display = "none";
 
-          if (!groups[groupName]) groups[groupName] = [];
-          groups[groupName].push({ ...v, displayName: itemName });
-        });
+        if (currentFilter === "All") {
+          tableBody.innerHTML = filteredVars.map(v => {
+            let valueHTML = String(v.value);
+            if (v.type === "Color") valueHTML = `<div class="color-swatch" style="background-color: ${v.value}"></div><span>${v.value}</span>`;
+            return createRowHTML(v.name, valueHTML, false, v.name, v.value);
+          }).join('');
+        } else {
+          const groups = {};
+          filteredVars.forEach(v => {
+            const parts = v.name.split('/');
+            let groupName = "Base", itemName = v.name;
+            if (parts.length >= 3) { groupName = parts[1]; itemName = parts.slice(2).join('/'); }
+            else if (parts.length === 2) { groupName = "Base"; itemName = parts[1]; }
+            else { groupName = "Base"; itemName = parts[0]; }
 
-        let html = '';
-        for (const [gName, items] of Object.entries(groups)) {
-          html += `
+            if (!groups[groupName]) groups[groupName] = [];
+            groups[groupName].push({ ...v, displayName: itemName });
+          });
+
+          let html = '';
+          for (const [gName, items] of Object.entries(groups)) {
+            html += `
             <div class="variable-group">
               <div class="group-header" onclick="this.parentElement.classList.toggle('collapsed')">
                 <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -578,50 +1215,60 @@
               </div>
               <div class="group-items">
                 ${items.map(item => {
-                  let valueHTML = String(item.value);
-                  if (item.type === "Color") valueHTML = `<div class="color-swatch" style="background-color: ${item.value}"></div><span>${item.value}</span>`;
-                  return createRowHTML(item.displayName, valueHTML, true, item.name, item.value);
-                }).join('')}
+              let valueHTML = String(item.value);
+              if (item.type === "Color") valueHTML = `<div class="color-swatch" style="background-color: ${item.value}"></div><span>${item.value}</span>`;
+              return createRowHTML(item.displayName, valueHTML, true, item.name, item.value);
+            }).join('')}
               </div>
             </div>
           `;
+          }
+          tableBody.innerHTML = html;
         }
-        tableBody.innerHTML = html;
       }
     }
-  }
 
-  // --- TWO WAY SYNC (ADD, EDIT, DELETE) --- //
-  
-  tableBody.addEventListener('click', (e) => {
-     const btn = e.target.closest('.action-btn');
-     if(!btn) return;
-     const path = btn.dataset.path;
+    // Handle Tab clicks
+    document.querySelectorAll('.collection-item').forEach(item => {
+      item.addEventListener('click', (e) => {
+        document.querySelectorAll('.collection-item').forEach(el => el.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+        currentFilter = e.currentTarget.dataset.type;
+        renderTable();
+      });
+    });
 
-     if(btn.classList.contains('edit-btn')) {
-         const row = btn.closest('.table-row');
-         row.classList.add('is-editing');
-         const nameTd = row.querySelector('.name-cell');
-         const valTd = row.querySelector('.val-cell');
-         
-         const rawVal = btn.dataset.val;
-         const parts = path.split('/');
-         const rootPart = parts.length > 1 ? parts[0] : '';
-         const editablePart = parts.length > 1 ? parts.slice(1).join('/') : path;
+    // --- TWO WAY SYNC (ADD, EDIT, DELETE) --- //
 
-         nameTd.innerHTML = `
+    tableBody.addEventListener('click', (e) => {
+      const btn = e.target.closest('.action-btn');
+      if (!btn) return;
+      const path = btn.dataset.path;
+
+      if (btn.classList.contains('edit-btn')) {
+        const row = btn.closest('.table-row');
+        row.classList.add('is-editing');
+        const nameTd = row.querySelector('.name-cell');
+        const valTd = row.querySelector('.val-cell');
+
+        const rawVal = btn.dataset.val;
+        const parts = path.split('/');
+        const rootPart = parts.length > 1 ? parts[0] : '';
+        const editablePart = parts.length > 1 ? parts.slice(1).join('/') : path;
+
+        nameTd.innerHTML = `
            <div style="display:flex; align-items:center; width:100%; overflow:hidden;">
              ${rootPart ? `<span style="color:#71717a; font-size:13px; margin-right:4px; white-space:nowrap;">${rootPart}/</span>` : ''}
              <input type="text" class="inline-edit-input" style="border-color:#3f3f46; flex:1; min-width:0;" id="editNameInput" />
            </div>
          `;
-         valTd.innerHTML = `<input type="text" class="inline-edit-input" id="editValInput" />`;
-         
-         document.getElementById('editNameInput').value = editablePart; 
-         document.getElementById('editValInput').value = rawVal;
+        valTd.innerHTML = `<input type="text" class="inline-edit-input" id="editValInput" />`;
 
-         const actions = row.querySelector('.row-actions');
-         actions.innerHTML = `
+        document.getElementById('editNameInput').value = editablePart;
+        document.getElementById('editValInput').value = rawVal;
+
+        const actions = row.querySelector('.row-actions');
+        actions.innerHTML = `
             <button class="action-btn confirm-btn" data-path="${path}" data-root="${rootPart}" title="Save">
                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
             </button>
@@ -629,256 +1276,256 @@
                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
          `;
-     }
+      }
 
-     if(btn.classList.contains('cancel-btn')) renderTable(); 
+      if (btn.classList.contains('cancel-btn')) renderTable();
 
-     if(btn.classList.contains('confirm-btn')) {
-         const rootPart = btn.dataset.root;
-         const editedName = document.getElementById('editNameInput').value.trim();
-         
-         if (!editedName) {
-             parent.postMessage({ pluginMessage: { type: "NOTIFY", message: "❌ Variable name cannot be empty." } }, "*");
-             return;
-         }
+      if (btn.classList.contains('confirm-btn')) {
+        const rootPart = btn.dataset.root;
+        const editedName = document.getElementById('editNameInput').value.trim();
 
-         pendingOldPath = path;
-         pendingNewPath = rootPart ? `${rootPart}/${editedName}` : editedName;
-         pendingNewValue = document.getElementById('editValInput').value;
-         
-         document.getElementById('editConfirmDialog').style.display = 'flex';
-     }
+        if (!editedName) {
+          parent.postMessage({ pluginMessage: { type: "NOTIFY", message: "❌ Variable name cannot be empty." } }, "*");
+          return;
+        }
 
-     if(btn.classList.contains('delete-btn')) {
-         pendingDeletePath = path;
-         document.getElementById('deleteConfirmDialog').style.display = 'flex';
-     }
-  });
+        pendingOldPath = path;
+        pendingNewPath = rootPart ? `${rootPart}/${editedName}` : editedName;
+        pendingNewValue = document.getElementById('editValInput').value;
 
-  // Re-build Nested Object from flat array (Used for Import)
-  function buildNestedJSON(flatArray) {
-     const newObj = {};
-     flatArray.forEach(v => {
-       const keys = v.name.split('/');
-       let current = newObj;
-       for (let i = 0; i < keys.length - 1; i++) {
-           if (!current[keys[i]]) current[keys[i]] = {}; 
-           current = current[keys[i]];
-       }
-       current[keys[keys.length - 1]] = v.value;
-     });
-     return newObj;
-  }
+        document.getElementById('editConfirmDialog').style.display = 'flex';
+      }
 
-  function applyJSONUpdate(oldPath, newPath, newValue, isDelete = false, isAdd = false) {
-     try {
-         const jsonObj = JSON.parse(input.value || "{}");
-         const inferType = (val) => {
-            if(!isNaN(val) && val.trim() !== '') return Number(val);
-            if(val === 'true') return true;
-            if(val === 'false') return false;
-            return String(val).replace(/['"]/g, ''); 
-         };
+      if (btn.classList.contains('delete-btn')) {
+        pendingDeletePath = path;
+        document.getElementById('deleteConfirmDialog').style.display = 'flex';
+      }
+    });
 
-         if (isDelete && oldPath) {
-             const keys = oldPath.split('/');
-             let current = jsonObj;
-             for (let i = 0; i < keys.length - 1; i++) {
-                 if (current[keys[i]]) current = current[keys[i]];
-             }
-             delete current[keys[keys.length - 1]];
-         } 
-         else if (!isDelete && !isAdd && oldPath) {
-             const oldKeys = oldPath.split('/');
-             let oldCurrent = jsonObj;
-             for (let i = 0; i < oldKeys.length - 1; i++) {
-                 if (oldCurrent[oldKeys[i]]) oldCurrent = oldCurrent[oldKeys[i]];
-             }
-             delete oldCurrent[oldKeys[oldKeys.length - 1]]; 
-             
-             const newKeys = newPath.split('/');
-             let newCurrent = jsonObj;
-             for (let i = 0; i < newKeys.length - 1; i++) {
-                 if (!newCurrent[newKeys[i]]) newCurrent[newKeys[i]] = {}; 
-                 newCurrent = newCurrent[newKeys[i]];
-             }
-             newCurrent[newKeys[newKeys.length - 1]] = inferType(newValue);
-         }
-         else if (isAdd && newPath) {
-             const newKeys = newPath.split('/');
-             let newCurrent = jsonObj;
-             for (let i = 0; i < newKeys.length - 1; i++) {
-                 if (!newCurrent[newKeys[i]]) newCurrent[newKeys[i]] = {}; 
-                 newCurrent = newCurrent[newKeys[i]];
-             }
-             newCurrent[newKeys[newKeys.length - 1]] = inferType(newValue);
-         }
+    // Re-build Nested Object from flat array (Used for Import)
+    function buildNestedJSON(flatArray) {
+      const newObj = {};
+      flatArray.forEach(v => {
+        const keys = v.name.split('/');
+        let current = newObj;
+        for (let i = 0; i < keys.length - 1; i++) {
+          if (!current[keys[i]]) current[keys[i]] = {};
+          current = current[keys[i]];
+        }
+        current[keys[keys.length - 1]] = v.value;
+      });
+      return newObj;
+    }
 
-         input.value = JSON.stringify(jsonObj, null, 2);
-         updateLineNumbers();
-         charCount.textContent = new Blob([input.value]).size + " bytes";
-         updatePreview(); 
-         parent.postMessage({ pluginMessage: { type: "NOTIFY", message: `✅ JSON Successfully Updated.` } }, "*");
+    function applyJSONUpdate(oldPath, newPath, newValue, isDelete = false, isAdd = false) {
+      try {
+        const jsonObj = JSON.parse(input.value || "{}");
+        const inferType = (val) => {
+          if (!isNaN(val) && val.trim() !== '') return Number(val);
+          if (val === 'true') return true;
+          if (val === 'false') return false;
+          return String(val).replace(/['"]/g, '');
+        };
 
-     } catch (e) {
-         parent.postMessage({ pluginMessage: { type: "NOTIFY", message: "❌ Invalid JSON. Please fix formatting errors." } }, "*");
-     }
-  }
+        if (isDelete && oldPath) {
+          const keys = oldPath.split('/');
+          let current = jsonObj;
+          for (let i = 0; i < keys.length - 1; i++) {
+            if (current[keys[i]]) current = current[keys[i]];
+          }
+          delete current[keys[keys.length - 1]];
+        }
+        else if (!isDelete && !isAdd && oldPath) {
+          const oldKeys = oldPath.split('/');
+          let oldCurrent = jsonObj;
+          for (let i = 0; i < oldKeys.length - 1; i++) {
+            if (oldCurrent[oldKeys[i]]) oldCurrent = oldCurrent[oldKeys[i]];
+          }
+          delete oldCurrent[oldKeys[oldKeys.length - 1]];
 
-  // Bindings
-  document.getElementById('btnConfirmInlineEdit').onclick = () => {
+          const newKeys = newPath.split('/');
+          let newCurrent = jsonObj;
+          for (let i = 0; i < newKeys.length - 1; i++) {
+            if (!newCurrent[newKeys[i]]) newCurrent[newKeys[i]] = {};
+            newCurrent = newCurrent[newKeys[i]];
+          }
+          newCurrent[newKeys[newKeys.length - 1]] = inferType(newValue);
+        }
+        else if (isAdd && newPath) {
+          const newKeys = newPath.split('/');
+          let newCurrent = jsonObj;
+          for (let i = 0; i < newKeys.length - 1; i++) {
+            if (!newCurrent[newKeys[i]]) newCurrent[newKeys[i]] = {};
+            newCurrent = newCurrent[newKeys[i]];
+          }
+          newCurrent[newKeys[newKeys.length - 1]] = inferType(newValue);
+        }
+
+        input.value = JSON.stringify(jsonObj, null, 2);
+        updateLineNumbers();
+        charCount.textContent = new Blob([input.value]).size + " bytes";
+        updatePreview();
+        parent.postMessage({ pluginMessage: { type: "NOTIFY", message: `✅ JSON Successfully Updated.` } }, "*");
+
+      } catch (e) {
+        parent.postMessage({ pluginMessage: { type: "NOTIFY", message: "❌ Invalid JSON. Please fix formatting errors." } }, "*");
+      }
+    }
+
+    // Bindings
+    document.getElementById('btnConfirmInlineEdit').onclick = () => {
       applyJSONUpdate(pendingOldPath, pendingNewPath, pendingNewValue, false, false);
       document.getElementById('editConfirmDialog').style.display = 'none';
-  };
-  document.getElementById('btnCancelInlineEdit').onclick = () => {
-      document.getElementById('editConfirmDialog').style.display = 'none'; renderTable(); 
-  };
-  document.getElementById('btnConfirmInlineDelete').onclick = () => {
+    };
+    document.getElementById('btnCancelInlineEdit').onclick = () => {
+      document.getElementById('editConfirmDialog').style.display = 'none'; renderTable();
+    };
+    document.getElementById('btnConfirmInlineDelete').onclick = () => {
       applyJSONUpdate(pendingDeletePath, null, null, true, false);
       document.getElementById('deleteConfirmDialog').style.display = 'none';
-  };
-  document.getElementById('btnCancelInlineDelete').onclick = () => { document.getElementById('deleteConfirmDialog').style.display = 'none'; };
+    };
+    document.getElementById('btnCancelInlineDelete').onclick = () => { document.getElementById('deleteConfirmDialog').style.display = 'none'; };
 
-  document.getElementById('btnOpenAddVar').onclick = () => {
+    document.getElementById('btnOpenAddVar').onclick = () => {
       document.getElementById('newVarName').value = '';
       document.getElementById('newVarValue').value = '';
       document.getElementById('addVarDialog').style.display = 'flex';
-  };
-  document.getElementById('btnCancelAddVar').onclick = () => { document.getElementById('addVarDialog').style.display = 'none'; };
-  document.getElementById('btnConfirmAddVar').onclick = () => {
+    };
+    document.getElementById('btnCancelAddVar').onclick = () => { document.getElementById('addVarDialog').style.display = 'none'; };
+    document.getElementById('btnConfirmAddVar').onclick = () => {
       const name = document.getElementById('newVarName').value.trim();
       const val = document.getElementById('newVarValue').value.trim();
-      if(name && val) {
-          applyJSONUpdate(null, name, val, false, true);
-          document.getElementById('addVarDialog').style.display = 'none';
+      if (name && val) {
+        applyJSONUpdate(null, name, val, false, true);
+        document.getElementById('addVarDialog').style.display = 'none';
       }
-  };
-
-  // --- EXPORT FUNCTIONALITY ---
-  
-  btnExportMenu.onclick = (e) => {
-    e.stopPropagation();
-    exportDropdown.classList.toggle('open');
-  };
-
-  window.onclick = () => { exportDropdown.classList.remove('open'); };
-
-  function toCamelCase(str) {
-    return str.replace(/[-_\/]+(.)?/g, (_, c) => c ? c.toUpperCase() : '');
-  }
-
-  function generateExportCode(format) {
-    if (parsedVariables.length === 0) return "No variables to export.";
-    let code = "";
-    
-    switch(format) {
-      case "css":
-        exportTitle.textContent = "Export CSS Variables";
-        code = ":root {\n";
-        parsedVariables.forEach(v => {
-          const cssName = v.name.replace(/\//g, '-');
-          code += `  --${cssName}: ${v.value};\n`;
-        });
-        code += "}";
-        break;
-      case "react":
-        exportTitle.textContent = "Export React / JS Object";
-        code = "export const tokens = " + JSON.stringify(buildNestedJSON(parsedVariables), null, 2) + ";";
-        break;
-      case "flutter":
-        exportTitle.textContent = "Export Flutter (Dart)";
-        code = "import 'package:flutter/material.dart';\n\nclass AppTokens {\n";
-        parsedVariables.forEach(v => {
-          const varName = toCamelCase(v.name);
-          if (v.type === "Color") {
-             const hex = String(v.value).replace('#', '');
-             const argb = hex.length === 8 ? hex : `FF${hex}`;
-             code += `  static const Color ${varName} = Color(0x${argb});\n`;
-          } else if (v.type === "Number") {
-             code += `  static const double ${varName} = ${v.value};\n`;
-          } else if (v.type === "Boolean") {
-             code += `  static const bool ${varName} = ${v.value};\n`;
-          } else {
-             code += `  static const String ${varName} = "${v.value}";\n`;
-          }
-        });
-        code += "}";
-        break;
-      case "swift":
-        exportTitle.textContent = "Export Swift (iOS)";
-        code = "import SwiftUI\n\nstruct AppTokens {\n";
-        parsedVariables.forEach(v => {
-          const varName = toCamelCase(v.name);
-          if (v.type === "Color") {
-             const hex = String(v.value);
-             code += `  static let ${varName} = Color(hex: "${hex}")\n`;
-          } else if (v.type === "Number") {
-             code += `  static let ${varName}: CGFloat = ${v.value}\n`;
-          } else if (v.type === "Boolean") {
-             code += `  static let ${varName}: Bool = ${v.value}\n`;
-          } else {
-             code += `  static let ${varName}: String = "${v.value}"\n`;
-          }
-        });
-        code += "}";
-        break;
-      case "json":
-        exportTitle.textContent = "Export Raw JSON";
-        code = JSON.stringify(buildNestedJSON(parsedVariables), null, 2);
-        break;
-    }
-    return code;
-  }
-
-  document.querySelectorAll('.dropdown-item').forEach(item => {
-    item.onclick = () => {
-      currentExportFormat = item.dataset.format;
-      if (parsedVariables.length === 0) updatePreview();
-      exportTextArea.value = generateExportCode(currentExportFormat);
-      exportDialog.style.display = 'flex';
     };
-  });
 
-  document.getElementById('btnCloseExport').onclick = () => exportDialog.style.display = 'none';
-  
-  document.getElementById('btnCopyExport').onclick = () => {
-    exportTextArea.select();
-    document.execCommand('copy');
-    parent.postMessage({ pluginMessage: { type: "NOTIFY", message: "✅ Code copied to clipboard!" } }, "*");
-  };
+    // --- EXPORT FUNCTIONALITY ---
 
-  document.getElementById('btnDownloadExport').onclick = () => {
-    const text = exportTextArea.value;
-    const blob = new Blob([text], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    
-    let ext = '.txt';
-    if(currentExportFormat === 'css') ext = '.css';
-    if(currentExportFormat === 'react') ext = '.js';
-    if(currentExportFormat === 'flutter') ext = '.dart';
-    if(currentExportFormat === 'swift') ext = '.swift';
-    if(currentExportFormat === 'json') ext = '.json';
-    
-    a.download = `tokens${ext}`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
+    btnExportMenu.onclick = (e) => {
+      e.stopPropagation();
+      exportDropdown.classList.toggle('open');
+    };
 
-  // --- STANDARD LOGIC & API SYNC --- //
+    window.onclick = () => { exportDropdown.classList.remove('open'); };
 
-  function renderDiffList() {
-    diffList.innerHTML = currentDiffData.map((item, index) => {
-      const isOverride = item.status === 'OVERRIDE';
-      const badge = isOverride 
-        ? `<span style="color:#ef4444; font-size:10px; border:1px solid #ef4444; padding:2px 4px; border-radius:4px; margin-left:8px;">CHANGED</span>` 
-        : `<span style="color:#10b981; font-size:10px; border:1px solid #10b981; padding:2px 4px; border-radius:4px; margin-left:8px;">NEW</span>`;
-      const oldValStr = item.oldValue !== null ? String(item.oldValue) : "";
-      
-      return `
+    function toCamelCase(str) {
+      return str.replace(/[-_\/]+(.)?/g, (_, c) => c ? c.toUpperCase() : '');
+    }
+
+    function generateExportCode(format) {
+      if (parsedVariables.length === 0) return "No variables to export.";
+      let code = "";
+
+      switch (format) {
+        case "css":
+          exportTitle.textContent = "Export CSS Variables";
+          code = ":root {\n";
+          parsedVariables.forEach(v => {
+            const cssName = v.name.replace(/\//g, '-');
+            code += `  --${cssName}: ${v.value};\n`;
+          });
+          code += "}";
+          break;
+        case "react":
+          exportTitle.textContent = "Export React / JS Object";
+          code = "export const tokens = " + JSON.stringify(buildNestedJSON(parsedVariables), null, 2) + ";";
+          break;
+        case "flutter":
+          exportTitle.textContent = "Export Flutter (Dart)";
+          code = "import 'package:flutter/material.dart';\n\nclass AppTokens {\n";
+          parsedVariables.forEach(v => {
+            const varName = toCamelCase(v.name);
+            if (v.type === "Color") {
+              const hex = String(v.value).replace('#', '');
+              const argb = hex.length === 8 ? hex : `FF${hex}`;
+              code += `  static const Color ${varName} = Color(0x${argb});\n`;
+            } else if (v.type === "Number") {
+              code += `  static const double ${varName} = ${v.value};\n`;
+            } else if (v.type === "Boolean") {
+              code += `  static const bool ${varName} = ${v.value};\n`;
+            } else {
+              code += `  static const String ${varName} = "${v.value}";\n`;
+            }
+          });
+          code += "}";
+          break;
+        case "swift":
+          exportTitle.textContent = "Export Swift (iOS)";
+          code = "import SwiftUI\n\nstruct AppTokens {\n";
+          parsedVariables.forEach(v => {
+            const varName = toCamelCase(v.name);
+            if (v.type === "Color") {
+              const hex = String(v.value);
+              code += `  static let ${varName} = Color(hex: "${hex}")\n`;
+            } else if (v.type === "Number") {
+              code += `  static let ${varName}: CGFloat = ${v.value}\n`;
+            } else if (v.type === "Boolean") {
+              code += `  static let ${varName}: Bool = ${v.value}\n`;
+            } else {
+              code += `  static let ${varName}: String = "${v.value}"\n`;
+            }
+          });
+          code += "}";
+          break;
+        case "json":
+          exportTitle.textContent = "Export Raw JSON";
+          code = JSON.stringify(buildNestedJSON(parsedVariables), null, 2);
+          break;
+      }
+      return code;
+    }
+
+    document.querySelectorAll('.dropdown-item').forEach(item => {
+      item.onclick = () => {
+        currentExportFormat = item.dataset.format;
+        if (parsedVariables.length === 0) updatePreview();
+        exportTextArea.value = generateExportCode(currentExportFormat);
+        exportDialog.style.display = 'flex';
+      };
+    });
+
+    document.getElementById('btnCloseExport').onclick = () => exportDialog.style.display = 'none';
+
+    document.getElementById('btnCopyExport').onclick = () => {
+      exportTextArea.select();
+      document.execCommand('copy');
+      parent.postMessage({ pluginMessage: { type: "NOTIFY", message: "✅ Code copied to clipboard!" } }, "*");
+    };
+
+    document.getElementById('btnDownloadExport').onclick = () => {
+      const text = exportTextArea.value;
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+
+      let ext = '.txt';
+      if (currentExportFormat === 'css') ext = '.css';
+      if (currentExportFormat === 'react') ext = '.js';
+      if (currentExportFormat === 'flutter') ext = '.dart';
+      if (currentExportFormat === 'swift') ext = '.swift';
+      if (currentExportFormat === 'json') ext = '.json';
+
+      a.download = `tokens${ext}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    };
+
+    // --- STANDARD LOGIC & API SYNC --- //
+
+    function renderDiffList() {
+      diffList.innerHTML = currentDiffData.map((item, index) => {
+        const isOverride = item.status === 'OVERRIDE';
+        const badge = isOverride
+          ? `<span style="color:#ef4444; font-size:10px; border:1px solid #ef4444; padding:2px 4px; border-radius:4px; margin-left:8px;">CHANGED</span>`
+          : `<span style="color:#10b981; font-size:10px; border:1px solid #10b981; padding:2px 4px; border-radius:4px; margin-left:8px;">NEW</span>`;
+        const oldValStr = item.oldValue !== null ? String(item.oldValue) : "";
+
+        return `
         <label style="display: flex; align-items: center; gap: 12px; padding: 10px; border-bottom: 1px solid #18181b; cursor: pointer; border-radius: 6px;">
           <input type="checkbox" class="diff-checkbox" data-index="${index}" checked />
           <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
@@ -890,97 +1537,98 @@
           </div>
         </label>
       `;
-    }).join('');
-  }
-
-  input.addEventListener('scroll', () => { lineNumbers.scrollTop = input.scrollTop; });
-  function updateLineNumbers() {
-    const lines = input.value.split('\n').length;
-    const displayLines = Math.max(lines, 40); 
-    const current = lineNumbers.children.length;
-    if (displayLines > current) {
-      for (let i = current + 1; i <= displayLines; i++) {
-        const span = document.createElement('span'); span.textContent = i; lineNumbers.appendChild(span);
-      }
-    } else if (displayLines < current) {
-      while (lineNumbers.children.length > displayLines) lineNumbers.removeChild(lineNumbers.lastChild);
+      }).join('');
     }
-  }
 
-  input.addEventListener("input", () => {
-    charCount.textContent = new Blob([input.value]).size + " bytes";
-    updateLineNumbers();
-  });
+    input.addEventListener('scroll', () => { lineNumbers.scrollTop = input.scrollTop; });
+    function updateLineNumbers() {
+      const lines = input.value.split('\n').length;
+      const displayLines = Math.max(lines, 40);
+      const current = lineNumbers.children.length;
+      if (displayLines > current) {
+        for (let i = current + 1; i <= displayLines; i++) {
+          const span = document.createElement('span'); span.textContent = i; lineNumbers.appendChild(span);
+        }
+      } else if (displayLines < current) {
+        while (lineNumbers.children.length > displayLines) lineNumbers.removeChild(lineNumbers.lastChild);
+      }
+    }
 
-  fileInput.onchange = async (e) => {
-    const file = e.target.files[0]; if (!file) return;
-    const text = await file.text(); input.value = text;
-    charCount.textContent = new Blob([text]).size + " bytes"; updateLineNumbers();
-  };
+    input.addEventListener("input", () => {
+      charCount.textContent = new Blob([input.value]).size + " bytes";
+      updateLineNumbers();
+    });
 
-  editorWrap.addEventListener('dragover', (e) => { e.preventDefault(); editorWrap.style.borderColor = '#52525b'; });
-  editorWrap.addEventListener('dragleave', () => { editorWrap.style.borderColor = '#27272a'; });
-  editorWrap.addEventListener('drop', async (e) => {
-    e.preventDefault(); editorWrap.style.borderColor = '#27272a';
-    const file = e.dataTransfer.files[0];
-    if (file && file.name.endsWith('.json')) {
+    fileInput.onchange = async (e) => {
+      const file = e.target.files[0]; if (!file) return;
       const text = await file.text(); input.value = text;
       charCount.textContent = new Blob([text]).size + " bytes"; updateLineNumbers();
-    }
-  });
+    };
 
-  updateLineNumbers();
+    editorWrap.addEventListener('dragover', (e) => { e.preventDefault(); editorWrap.style.borderColor = '#52525b'; });
+    editorWrap.addEventListener('dragleave', () => { editorWrap.style.borderColor = '#27272a'; });
+    editorWrap.addEventListener('drop', async (e) => {
+      e.preventDefault(); editorWrap.style.borderColor = '#27272a';
+      const file = e.dataTransfer.files[0];
+      if (file && file.name.endsWith('.json')) {
+        const text = await file.text(); input.value = text;
+        charCount.textContent = new Blob([text]).size + " bytes"; updateLineNumbers();
+      }
+    });
 
-  importLeftBtn.onclick = () => { 
-    const jsonStr = input.value.trim();
-    if (!jsonStr) { parent.postMessage({ pluginMessage: { type: "NOTIFY", message: "Please paste or upload JSON first." } }, "*"); return; }
-    updatePreview(); 
-    if (parsedVariables.length > 0) parent.postMessage({ pluginMessage: { type: "NOTIFY", message: `Previewing ${parsedVariables.length} variables.` } }, "*");
-    else parent.postMessage({ pluginMessage: { type: "NOTIFY", message: "❌ Invalid JSON or no valid variables detected." } }, "*");
-  };
+    updateLineNumbers();
 
-  importRightBtn.onclick = () => {
-    if (parsedVariables.length === 0) updatePreview();
-    if (parsedVariables.length > 0) parent.postMessage({ pluginMessage: { type: "CHECK_EXISTING", data: parsedVariables } }, "*");
-  };
-
-  btnImportFromFigma.onclick = () => {
-    parent.postMessage({ pluginMessage: { type: "FETCH_VARIABLES" } }, "*");
-  };
-
-  window.onmessage = (event) => {
-    const msg = event.data?.pluginMessage; if (!msg) return;
-    if (msg.type === "PROMPT_OVERRIDE") { currentDiffData = msg.data; overrideDialog.style.display = "flex"; } 
-    else if (msg.type === "SYNC_READY") { parent.postMessage({ pluginMessage: { type: "SYNC_VARIABLES", data: msg.data } }, "*"); }
-    else if (msg.type === "LOAD_VARIABLES") {
-      const newJSON = buildNestedJSON(msg.data);
-      input.value = JSON.stringify(newJSON, null, 2);
-      updateLineNumbers();
-      charCount.textContent = new Blob([input.value]).size + " bytes";
+    importLeftBtn.onclick = () => {
+      const jsonStr = input.value.trim();
+      if (!jsonStr) { parent.postMessage({ pluginMessage: { type: "NOTIFY", message: "Please paste or upload JSON first." } }, "*"); return; }
       updatePreview();
-      parent.postMessage({ pluginMessage: { type: "NOTIFY", message: `✅ Successfully imported ${msg.data.length} variables from Figma.` } }, "*");
-    }
-  };
+      if (parsedVariables.length > 0) parent.postMessage({ pluginMessage: { type: "NOTIFY", message: `Previewing ${parsedVariables.length} variables.` } }, "*");
+      else parent.postMessage({ pluginMessage: { type: "NOTIFY", message: "❌ Invalid JSON or no valid variables detected." } }, "*");
+    };
 
-  document.getElementById("btnUpdateOnly").onclick = () => {
-    overrideDialog.style.display = "none";
-    const newOnly = currentDiffData.filter(d => d.status === 'NEW');
-    parent.postMessage({ pluginMessage: { type: "SYNC_VARIABLES", data: newOnly } }, "*");
-  };
+    importRightBtn.onclick = () => {
+      if (parsedVariables.length === 0) updatePreview();
+      if (parsedVariables.length > 0) parent.postMessage({ pluginMessage: { type: "CHECK_EXISTING", data: parsedVariables } }, "*");
+    };
 
-  document.getElementById("btnReviewOverrides").onclick = () => {
-    overrideDialog.style.display = "none"; renderDiffList(); reviewDialog.style.display = "flex";
-  };
+    btnImportFromFigma.onclick = () => {
+      parent.postMessage({ pluginMessage: { type: "FETCH_VARIABLES" } }, "*");
+    };
 
-  document.getElementById("btnCancelDialog").onclick = () => { overrideDialog.style.display = "none"; };
-  document.getElementById("btnCancelReview").onclick = () => { reviewDialog.style.display = "none"; };
+    window.onmessage = (event) => {
+      const msg = event.data?.pluginMessage; if (!msg) return;
+      if (msg.type === "PROMPT_OVERRIDE") { currentDiffData = msg.data; overrideDialog.style.display = "flex"; }
+      else if (msg.type === "SYNC_READY") { parent.postMessage({ pluginMessage: { type: "SYNC_VARIABLES", data: msg.data } }, "*"); }
+      else if (msg.type === "LOAD_VARIABLES") {
+        const newJSON = buildNestedJSON(msg.data);
+        input.value = JSON.stringify(newJSON, null, 2);
+        updateLineNumbers();
+        charCount.textContent = new Blob([input.value]).size + " bytes";
+        updatePreview();
+        parent.postMessage({ pluginMessage: { type: "NOTIFY", message: `✅ Successfully imported ${msg.data.length} variables from Figma.` } }, "*");
+      }
+    };
 
-  document.getElementById("btnConfirmReview").onclick = () => {
-    const checkboxes = document.querySelectorAll('.diff-checkbox'); const finalSelection = [];
-    checkboxes.forEach(cb => { if (cb.checked) finalSelection.push(currentDiffData[cb.dataset.index]); });
-    reviewDialog.style.display = "none";
-    parent.postMessage({ pluginMessage: { type: "SYNC_VARIABLES", data: finalSelection } }, "*");
-  };
-</script>
+    document.getElementById("btnUpdateOnly").onclick = () => {
+      overrideDialog.style.display = "none";
+      const newOnly = currentDiffData.filter(d => d.status === 'NEW');
+      parent.postMessage({ pluginMessage: { type: "SYNC_VARIABLES", data: newOnly } }, "*");
+    };
+
+    document.getElementById("btnReviewOverrides").onclick = () => {
+      overrideDialog.style.display = "none"; renderDiffList(); reviewDialog.style.display = "flex";
+    };
+
+    document.getElementById("btnCancelDialog").onclick = () => { overrideDialog.style.display = "none"; };
+    document.getElementById("btnCancelReview").onclick = () => { reviewDialog.style.display = "none"; };
+
+    document.getElementById("btnConfirmReview").onclick = () => {
+      const checkboxes = document.querySelectorAll('.diff-checkbox'); const finalSelection = [];
+      checkboxes.forEach(cb => { if (cb.checked) finalSelection.push(currentDiffData[cb.dataset.index]); });
+      reviewDialog.style.display = "none";
+      parent.postMessage({ pluginMessage: { type: "SYNC_VARIABLES", data: finalSelection } }, "*");
+    };
+  </script>
 </body>
+
 </html>

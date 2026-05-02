@@ -105,7 +105,6 @@ figma.ui.onmessage = async (msg) => {
         else if (v.resolvedType === "FLOAT") { type = "Number"; }
         else if (v.resolvedType === "BOOLEAN") { type = "Boolean"; }
 
-        // Clean up Figma's internal naming structure (replace underscores back to slashes if needed, or just keep as is)
         let cleanName = v.name; 
         
         exported.push({ name: cleanName, value: val, type: type });

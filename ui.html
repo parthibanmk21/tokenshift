@@ -680,23 +680,27 @@
   function buildNestedJSON(flatArray) {
      const newObj = {};
      flatArray.forEach(v => {
-       const keys = v.name.split('/');
-       let current = newObj;
-       for (let i = 0; i < keys.length - 1; i++) {
-           if (typeof current[keys[i]] !== 'object' || current[keys[i]] === null) {
-               const oldVal = current[keys[i]];
-               current[keys[i]] = {}; 
-               if (oldVal !== undefined) {
-                   current[keys[i]]['$value'] = oldVal;
+       try {
+           const keys = v.name.split('/');
+           let current = newObj;
+           for (let i = 0; i < keys.length - 1; i++) {
+               if (typeof current[keys[i]] !== 'object' || current[keys[i]] === null) {
+                   const oldVal = current[keys[i]];
+                   current[keys[i]] = {}; 
+                   if (oldVal !== undefined && typeof current[keys[i]] === 'object') {
+                       current[keys[i]]['$value'] = oldVal;
+                   }
                }
+               current = current[keys[i]];
            }
-           current = current[keys[i]];
-       }
-       const lastKey = keys[keys.length - 1];
-       if (typeof current[lastKey] === 'object' && current[lastKey] !== null) {
-           current[lastKey]['$value'] = v.value;
-       } else {
-           current[lastKey] = v.value;
+           const lastKey = keys[keys.length - 1];
+           if (typeof current[lastKey] === 'object' && current[lastKey] !== null) {
+               current[lastKey]['$value'] = v.value;
+           } else {
+               current[lastKey] = v.value;
+           }
+       } catch (e) {
+           console.warn("Failed to process variable:", v.name, e);
        }
      });
      return newObj;

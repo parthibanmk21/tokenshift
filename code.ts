@@ -89,21 +89,42 @@ figma.ui.onmessage = async (msg) => {
   if (msg.type === "FETCH_VARIABLES") {
     try {
       const allVariables = await figma.variables.getLocalVariablesAsync();
+      const collections = await figma.variables.getLocalVariableCollectionsAsync();
+      
+      const collectionModes = new Map<string, string>();
+      for (const c of collections) {
+          if (c.modes.length > 0) {
+              collectionModes.set(c.id, c.modes[0].modeId);
+          }
+      }
+
       const exported: ParsedVariable[] = [];
 
       for (const v of allVariables) {
         if(!v.valuesByMode) continue;
-        const modes = Object.keys(v.valuesByMode);
-        if(modes.length === 0) continue;
         
-        const rawVal = v.valuesByMode[modes[0]];
+        const defaultModeId = collectionModes.get(v.variableCollectionId);
+        
+        let rawVal;
+        if (defaultModeId && v.valuesByMode[defaultModeId] !== undefined) {
+            rawVal = v.valuesByMode[defaultModeId];
+        } else {
+            const modes = Object.keys(v.valuesByMode);
+            if(modes.length === 0) continue;
+            rawVal = v.valuesByMode[modes[0]];
+        }
+        
         let val = rawVal;
         let type: "Color" | "Number" | "String" | "Boolean" = "String";
 
-        if (typeof rawVal === 'object' && (rawVal as any).type === 'VARIABLE_ALIAS') {
+        if (typeof rawVal === 'object' && rawVal !== null && (rawVal as any).type === 'VARIABLE_ALIAS') {
            const targetVar = allVariables.find(target => target.id === (rawVal as any).id);
            if (targetVar) val = `{${targetVar.name.replace(/_/g, '.')}}`;
            else val = `{unknown_alias}`;
+           
+           if (v.resolvedType === "COLOR") type = "Color";
+           else if (v.resolvedType === "FLOAT") type = "Number";
+           else if (v.resolvedType === "BOOLEAN") type = "Boolean";
         } else {
             if (v.resolvedType === "COLOR") { val = figmaColorToHex(rawVal); type = "Color"; }
             else if (v.resolvedType === "FLOAT") { 

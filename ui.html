@@ -683,10 +683,21 @@
        const keys = v.name.split('/');
        let current = newObj;
        for (let i = 0; i < keys.length - 1; i++) {
-           if (!current[keys[i]]) current[keys[i]] = {}; 
+           if (typeof current[keys[i]] !== 'object' || current[keys[i]] === null) {
+               const oldVal = current[keys[i]];
+               current[keys[i]] = {}; 
+               if (oldVal !== undefined) {
+                   current[keys[i]]['$value'] = oldVal;
+               }
+           }
            current = current[keys[i]];
        }
-       current[keys[keys.length - 1]] = v.value;
+       const lastKey = keys[keys.length - 1];
+       if (typeof current[lastKey] === 'object' && current[lastKey] !== null) {
+           current[lastKey]['$value'] = v.value;
+       } else {
+           current[lastKey] = v.value;
+       }
      });
      return newObj;
   }
@@ -975,11 +986,12 @@
     if (msg.type === "PROMPT_OVERRIDE") { currentDiffData = msg.data; overrideDialog.style.display = "flex"; }
     else if (msg.type === "SYNC_READY") { parent.postMessage({ pluginMessage: { type: "SYNC_VARIABLES", data: msg.data } }, "*"); }
     else if (msg.type === "LOAD_VARIABLES") {
-      const newJSON = buildNestedJSON(msg.data);
+      parsedVariables = msg.data;
+      const newJSON = buildNestedJSON(parsedVariables);
       input.value = JSON.stringify(newJSON, null, 2);
       updateLineNumbers();
       charCount.textContent = new Blob([input.value]).size + " bytes";
-      updatePreview();
+      renderTable();
       parent.postMessage({ pluginMessage: { type: "NOTIFY", message: `✅ Successfully imported ${msg.data.length} variables from Figma.` } }, "*");
     }
   };
